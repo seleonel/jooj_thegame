@@ -1,0 +1,170 @@
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  background-color: black;
+}
+
+.fullbody {
+  margin: 0 auto;
+  width: 90%;
+  text-align: center;
+  padding: 40px;
+}
+
+#canvasjooj {
+  width: 800px;
+  height: 600px;
+  background-color: white;
+  margin: auto;
+  display: block;
+}
+
+
+.titulos {
+  background-color:#f442a7;
+  color: black;
+  font-size: 16px;
+  text-align: left;
+  padding: 1px 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.bigtitulos {
+  background-color:#f442a7;
+  color: black;
+  font-size: 26px;
+  text-align: left;
+  padding: 1px 20px;
+  width: 100%;
+  box-sizing: border-box;
+
+}
+
+.toperson {
+  position: relative;
+   overflow: hidden;
+  padding: 200px;
+
+}
+
+
+.botaorev{
+  color: black;
+  background-color: #e58737;
+  width: 100%;
+  padding: 40px 0px;
+
+}
+.botaorev button{
+  color: black;
+  border: none;
+  background-color: #f442a7;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px 0px;
+  width: 18%;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  opacity: 0.8;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.botaorev button:hover{
+  opacity: 1.0;
+
+}
+
+.botoesext {
+  color: black;
+  border: none;
+  background-color: #f442a7;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px 0px;
+  width: 18%;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  opacity: 0.8;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.botoesext:hover{
+  opacity: 1.0;
+
+}
+
+
+.navegador {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.navegador ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #0c0d0f;
+}
+
+.navegador li{
+  list-style: none;
+  float: left;
+  }
+
+.navegador li a{
+  text-decoration: none;
+  position: relative;
+  color: white;
+  text-align: center;
+  display: block;
+  overflow: hidden;
+  transition: all 0.5s;
+  padding: 15px 20px;
+}
+
+.navegador li a:before {
+  content: '';
+  width: 30px;
+  position: absolute;
+  border-bottom: 4px solid #f442a7;
+  bottom: 0;
+  right: 350px;
+  transition: all 0.5s;
+}
+
+.navegador li a:hover:before {
+  right:0;
+}
+
+.navegador li a:hover:not(.selecionado) {
+  background-color: #ed93c6;
+}
+
+.selecionado {
+  background-color: #f442a7;
+  color: white;
+}
+
+a:link {
+    color: white;
+}
+
+a:visited {
+    color: #1a1fa8;
+}
+
+a:hover {
+    color: #ae7cff;
+}
+
+a:active {
+    color: red;
+}
