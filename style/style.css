@@ -12,11 +12,10 @@ body {
 }
 
 #canvasjooj {
-  width: 800px;
-  height: 600px;
-  background-color: white;
+  /*background-color: white;*/
   margin: auto;
   display: block;
+
 }
 
 
@@ -42,7 +41,7 @@ body {
 
 .toperson {
   position: relative;
-   overflow: hidden;
+  overflow: hidden;
   padding: 200px;
 
 }
