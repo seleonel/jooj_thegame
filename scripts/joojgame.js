@@ -10,12 +10,14 @@ var ctx = canvas.getContext('2d');
 var teclas_press = []; // vetor criado para listar as teclas pressionadas
 //objetos do jogo definidos, plataformas e players
 var player_sprite = new Image();
+var fundo_fase = new Image();
 var repeticao = 0;
 var plataforma_principal = new Image();
 var plataforma_sec = new Image();
 plataforma_principal.src = "images/plataforma1.png";
 plataforma_sec.src = "images/plataforma2.png";
 player_sprite.src = "images/char1.png";
+fundo_fase.src = "images/fase.png"
 
 
 
@@ -70,6 +72,8 @@ function quadroSingle(){
   var pos_img = frame * 10;
 
   limparTela();
+  ctx.drawImage(fundo_fase, 0, 0, canvas.width, canvas.height);
+
   //"física" de pulo
   if(teclas_press[32] == true && player_char.no_ar == false){
     // Tecla cima
@@ -102,10 +106,11 @@ function quadroSingle(){
 
     //colisao com as pequenas plataformas
     if(player_char.pos_y > plataforma_peq.pos_y - player_char.height && player_char.pos_y < plataforma_peq.pos_y + 30){
-      player_char.no_ar = false;
-      player_char.pos_y = plataforma_peq.pos_y - player_char.height;
-      player_char.vel_y = 0;
-    }
+      if((player_char.pos_x > 100  && player_char.pos_x < 250) || (player_char.pos_x > 550 && player_char.pos_x < 700)){
+        player_char.no_ar = false;
+        player_char.pos_y = plataforma_peq.pos_y - player_char.height;
+        player_char.vel_y = 0;
+    }}
   //plataformas desenhadas
   ctx.drawImage(plataforma_principal, plataforma.pos_x, plataforma.pos_y, plataforma.width, plataforma.height );
   ctx.drawImage(plataforma_sec, 100, plataforma_peq.pos_y, plataforma_peq.width, plataforma_peq.height );
