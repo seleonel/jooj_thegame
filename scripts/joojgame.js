@@ -8,20 +8,41 @@
 var canvas = document.getElementById('canvasjooj');
 var ctx = canvas.getContext('2d');
 var teclas_press = []; // vetor criado para listar as teclas pressionadas
+//objetos do jogo definidos, plataformas e players
 var player_sprite = new Image();
 var repeticao = 0;
-
+var plataforma_principal = new Image();
+var plataforma_sec = new Image();
+plataforma_principal.src = "images/plataforma1.png";
+plataforma_sec.src = "images/plataforma2.png";
 player_sprite.src = "images/char1.png";
+
+
+
 var player_char = {
   width: 45,
   height: 50,
   no_ar: true,
-  pos_x: 300,
-  pos_y: 300,
+  pos_x: 250,
+  pos_y: 200,
   vel_y: 0,
   vel_x: 0
 
 };
+var plataforma = {
+  pos_x: 250,
+  pos_y: 350,
+  height: 30,
+  width: 300
+
+};
+var plataforma_peq = {
+    pos_y: 500,
+    width: 150,
+    height: 30
+  };
+
+
 
 var pos_seta = {
   x_seta: 220,
@@ -47,11 +68,12 @@ function limparTela(){
 function quadroSingle(){
   var frame = repeticao % 7;
   var pos_img = frame * 10;
+
   limparTela();
   //"física" de pulo
   if(teclas_press[32] == true && player_char.no_ar == false){
     // Tecla cima
-    player_char.vel_y -= 40; //velocidade do pulo para 40
+    player_char.vel_y -= 30; //velocidade do pulo para 10
     player_char.no_ar = true;
     }
 
@@ -65,18 +87,30 @@ function quadroSingle(){
 
 
     //gravidade
-    player_char.vel_y += 0.25;
+    player_char.vel_y += 0.2;
     player_char.pos_y += player_char.vel_y;
     //friccao
     player_char.pos_x += player_char.vel_x
     player_char.vel_x *= 0.9;
     player_char.vel_y *= 0.9;
-    //colisao com a plataforma
-    if(player_char.pos_y > 600 - player_char.height && player_char.pos_x < 500){
+    //colisao com a plataforma principal(condição gigante)
+    if(player_char.pos_y > plataforma.pos_y - player_char.height && player_char.pos_y < plataforma.pos_y + 30 && player_char.pos_x >= plataforma.pos_x && player_char.pos_x <= plataforma.pos_x + 300){
       player_char.no_ar = false;
-      player_char.pos_y = 600 - player_char.height;
+      player_char.pos_y = plataforma.pos_y - player_char.height;
       player_char.vel_y = 0;
     }
+
+    //colisao com as pequenas plataformas
+    if(player_char.pos_y > plataforma_peq.pos_y - player_char.height && player_char.pos_y < plataforma_peq.pos_y + 30){
+      player_char.no_ar = false;
+      player_char.pos_y = plataforma_peq.pos_y - player_char.height;
+      player_char.vel_y = 0;
+    }
+  //plataformas desenhadas
+  ctx.drawImage(plataforma_principal, plataforma.pos_x, plataforma.pos_y, plataforma.width, plataforma.height );
+  ctx.drawImage(plataforma_sec, 100, plataforma_peq.pos_y, plataforma_peq.width, plataforma_peq.height );
+  ctx.drawImage(plataforma_sec, 550, plataforma_peq.pos_y, plataforma_peq.width, plataforma_peq.height );
+
     //primeiro personagem desenhado
   ctx.drawImage(
     player_sprite,
