@@ -34,7 +34,8 @@ player_stand.src = "images/pe.png";
 //player_2jump.src ="images/p2pulando.png";
 //player_2stand.src ="images/p2pe.png";
 nao_mutado = true;
-
+// gravidade?
+valor_gravidade = 0.8;
 // teclas no teclado são salvas no vetor teclas_press
 document.addEventListener("keydown", function(pressaoTec){
     teclas_press[pressaoTec.keyCode] = true;});
@@ -50,6 +51,8 @@ function limparQuad(){
 var player_1 = {
   x_pos: 200,
   y_pos: 490 - 290,
+  x_vel: 0,
+  y_vel: 0,
   width: 100,
   height: 290,
   vida: 100,
@@ -65,6 +68,8 @@ var player_1 = {
 var player_2 = {
   x_pos: 800,
   y_pos: 490 - 290,
+  x_vel: 0,
+  y_vel: 0,
   width: 100,
   height: 290,
   vida: 100,
@@ -84,26 +89,43 @@ function comecarJogo(){
   ctx.drawImage(fundo_jogo, 0, 0, canvas.width, canvas.height);
   //acoes player 1
   //tecla direita aumenta x
-  if (teclas_press[39] == true)
-    if(player_1.lado_esquerdo == false){
+  if (teclas_press[39] == true){
+    if(player_1.lado_esquerdo == false && player_1.no_ar == false){
       player_1.defendendo = true; // defende se estiver no lado direito + anda lentamente
-      player_1.x_pos += 5;}
-    else{
-      player_1.x_pos += 10;
+      player_1.x_vel += 0.3;}
+    else if(player_1.lado_esquerdo && player_1.no_ar == false){
+      player_1.x_vel += 0.7;
       player_1.andando = true;}
+    else if(player_1.no_ar == true && teclas_press[37] == false){
+      player_1.x_vel += 0.7;
+    }
+    else{
+      player_1.andando = false;
+    }}
 
   //tecla esquerda diminui x
-  if(teclas_press[37] == true)
-    if(player_1.lado_esquerdo){
+  if(teclas_press[37] == true){
+    if(player_1.lado_esquerdo && player_1.no_ar == false){
       player_1.defendendo = true;
-      player_1.x_pos -= 5;}
-    else{
-      player_1.x_pos -= 10;
+      player_1.x_vel -= 0.3;}
+    else if(player_1.lado_esquerdo == false && player_1.no_ar == false){
+      player_1.x_vel -= 0.7;
       player_1.andando = true;}
+    else if(player_1.no_ar == true && teclas_press[39] == false){
+      player_1.x_vel -= 0.7; }
+    else {
+      player_1.andando = false;}}
+
+
   // tecla cima pula e diminui y
   // pulo será difícil fazer
-  if(teclas_press[38] == true)
-  //player_1.y_pos -= 10;
+  if(teclas_press[38] == true && player_1.no_ar == false){
+    player_1.y_vel -= 30;
+    player_1.no_ar = true;
+  }
+
+
+
   // tecla baixo agacha
   if(teclas_press[40] == true)
     player_1.agachando = true;
@@ -119,48 +141,71 @@ function comecarJogo(){
   if(teclas_press[83] == true)
     player_2.agachando = true;
 
+  //"física"
+  player_1.y_vel += valor_gravidade;
+  player_1.y_pos += player_1.y_vel;
+  player_2.y_vel += valor_gravidade;
+  player_2.y_pos += player_1.y_vel;
+  player_1.x_pos += player_1.x_vel;
+  player_2.x_pos += player_2.x_vel;
+  player_1.x_vel *= 0.9;
+  player_2.x_vel *= 0.9;
+  player_1.y_vel *= 0.9;
+  player_2.y_vel *= 0.9;
+
+
+
   //colisão vai alterar os x e y
   // no caso só com cenário
   // 490 é nosso chão
   // 800 e 0 são as paredes
   if(player_1.x_pos <= 0)
-      player_1.x_pos = 0;
-      if(player_1.y_pos <= 0)
-          player_1.y_pos = 0;
+    player_1.x_pos = 0;
+    if(player_1.y_pos <= 0)
+      player_1.y_vel = -5;
   if(player_2.y_pos <= 0)
-      player_2.y_pos = 0;
-      if(player_2.x_pos <= 0)
-          player_2.x_pos = 0;
+    player_2.y_vel = -5;
+    if(player_2.x_pos <= 0)
+      player_2.x_pos = 0;
 
-   if(player_1.x_pos >= 800 - player_1.width){
-       player_1.x_pos = 800 - player_1.width;
-       if (player_1.y_pos >= 490 - player_1.height)
-           player_1.y_pos = 490 - player_1.height;
-       else if (player_1.y_pos < 0)
-           player_1.y_pos = 0;}
+  if(player_1.x_pos >= 800 - player_1.width){
+    player_1.x_pos = 800 - player_1.width;
+    if (player_1.y_pos >= 490 - player_1.height){
+      player_1.y_pos = 490 - player_1.height;
+      player_1.y_vel = 0;
+      player_1.no_ar = false;}
+    else if (player_1.y_pos < 0)
+      player_1.y_pos = 0;}
 
-   else if(player_1.y_pos >= 490 - player_1.height){
-       player_1.y_pos = 490 - player_1.height;
-       if (player_1.x_pos >= 800 - player_1.width)
-           player_1.x_pos = 800 - player_1.width;
-       else if (player_1.x_pos < 0)
-           player_1.x_pos = 0;}
+  else if(player_1.y_pos >= 490 - player_1.height){
+    player_1.y_pos = 490 - player_1.height;
+    player_1.y_vel = 0;
+    player_1.no_ar = false;
+    if (player_1.x_pos >= 800 - player_1.width)
+      player_1.x_pos = 800 - player_1.width;
+    else if (player_1.x_pos < 0)
+      player_1.x_pos = 0;}
 
-   if(player_2.x_pos >= 800 - player_1.width){
-       player_2.x_pos = 800 - player_1.width;
-       if (player_2.y_pos >= 490 - player_2.height)
-           player_2.y_pos = 490 - player_2.height;
-       else if (player_2.y_pos < 0)
-           player_2.y_pos = 0;}
+  if(player_2.x_pos >= 800 - player_1.width){
+    player_2.x_pos = 800 - player_1.width;
+    if (player_2.y_pos >= 490 - player_2.height)
+      player_2.y_pos = 490 - player_2.height;
+    else if (player_2.y_pos < 0)
+      player_2.y_pos = 0;}
 
-   else if(player_2.y_pos >= 490 - player_2.height){
-       player_2.y_pos = 490 - player_2.height;
-       if (player_2.x_pos >= 800 - player_1.width)
-           player_2.x_pos = 800 - player_1.width;
-       else if (player_2.x_pos < 0)
-           player_2.x_pos = 0;}
+  else if(player_2.y_pos >= 490 - player_2.height){
+    player_2.y_pos = 490 - player_2.height;
+    if (player_2.x_pos >= 800 - player_1.width)
+      player_2.x_pos = 800 - player_1.width;
+    else if (player_2.x_pos < 0)
+      player_2.x_pos = 0;}
 //console.log(player_1.x_pos, player_1.y_pos);
 // fim das colisões com cenário
+
+
+
+
+
 
 // colisões entre players
 //posição dos sprites
@@ -168,7 +213,6 @@ function comecarJogo(){
       player_1.lado_esquerdo = false;
       player_2.lado_esquerdo = true;
   }
-
 
 
 
