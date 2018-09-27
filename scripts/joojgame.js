@@ -57,16 +57,17 @@ var player_2crouch = new Image();
 var player_2punch = new Image();
 var player_2jump = new Image();
 var player_2walk = new Image();
+var player_2kick = new Image();
 var player_2jumpkick = new Image();
 var player_2jumppunch = new Image();
-//player_2stand.src = "images/pe.png";
-//player_2crouch.src = "images/agachando.png";
-//player_2punch.src ="images/soco.png";
-//player_2jump.src = "images/pulando.png";
-//player_2kick.src ="images/chute.png";
-//player_2jumpkick.src = "images/chute_pulando.png";
-//player_2jumppunch.src ="images/soco_pulando.png";
-//player_2walk.src ="images/andando.png";
+player_2stand.src = "images/base1.png";
+player_2crouch.src = "images/down1.png";
+player_2punch.src ="images/soco1.png";
+player_2jump.src = "images/jump1.png";
+player_2kick.src ="images/chute1.png";
+player_2jumpkick.src = "images/chute1.png";
+player_2jumppunch.src ="images/soco1.png";
+player_2walk.src ="base1.png";
 nao_mutado = true;
 // gravidade?
 valor_gravidade = 0.98;
@@ -90,7 +91,6 @@ var player_1 = {
   y_vel: 0,
   width: 77,
   height: 97,
-  vida: 100,
   no_ar: false,
   soco: false,
   chute: false,
@@ -108,19 +108,47 @@ var player_2 = {
   y_vel: 0,
   width: 77,
   height: 97,
-  vida: 100,
   no_ar: false,
   soco: false,
   chute: false,
   pulando: false,
-  lado_esquerdo: true,
+  lado_esquerdo: false,
   defendendo: false,
   agachando: false,
   andando: false
 };
 
+var vidap1 = {
+    x: 50,
+    y: 50,
+    largura: 300,
+    altura: 50,
+    cor: "blue"
+}
+
+var vidap2 = {
+    x: 500 ,
+    y: 50,
+    largura: 300,
+    altura:50,
+    cor: "blue"
+}
+
+function sistemaDano()
+{
+
+
+    ctx.fillStyle = vidap1.cor;
+    ctx.fillRect(vidap1.x, vidap1.y, vidap1.largura, vidap1.altura);
+
+
+    ctx.fillStyle = vidap2.cor;
+    ctx.fillRect(vidap2.x, vidap2.y, vidap2.largura, vidap2.altura);
+
+}
+
 function colisaoCenario(){
-  //colisão vai alterar os x e y
+ //colisão vai alterar os x e y
   // no caso só com cenário
   // 490 é nosso chão
   // 800 e 0 são as paredes
@@ -135,42 +163,49 @@ function colisaoCenario(){
 
   if(player_1.x_pos >= 800 - player_1.width){
     player_1.x_pos = 800 - player_1.width;
-  if (player_1.y_pos >= 490 - player_1.height){
-    player_1.y_pos = 490 - player_1.height;
-    player_1.y_vel = 0;
-    player_1.no_ar = false;
-    player_1.pulando = false;}
-  else if (player_1.y_pos < 0)
-    player_1.y_pos = 0;}
+    if (player_1.y_pos >= 490 - player_1.height){
+      player_1.y_pos = 490 - player_1.height;
+      player_1.y_vel = 0;
+      player_1.no_ar = false;
+      player_1.pulando = false;}
+    else if (player_1.y_pos < 0)
+      player_1.y_pos = 0;}
 
   else if(player_1.y_pos >= 490 - player_1.height){
     player_1.y_pos = 490 - player_1.height;
     player_1.y_vel = 0;
     player_1.no_ar = false;
     player_1.pulando = false;
-  if (player_1.x_pos >= 800 - player_1.width)
-    player_1.x_pos = 800 - player_1.width;
-  else if (player_1.x_pos < 0)
-    player_1.x_pos = 0;}
+    if (player_1.x_pos >= 800 - player_1.width)
+      player_1.x_pos = 800 - player_1.width;
+      else if (player_1.x_pos < 0)
+        player_1.x_pos = 0;}
 
-  if(player_2.x_pos >= 800 - player_1.width){
-    player_2.x_pos = 800 - player_1.width;
-  if (player_2.y_pos >= 490 - player_2.height)
-    player_2.y_pos = 490 - player_2.height;
-  else if (player_2.y_pos < 0)
+  if(player_2.x_pos >= 800 - player_2.width){
+    player_2.x_pos = 800 - player_2.width;
+	player_2.y_vel = 0;
+    player_2.no_ar = false;
+    player_2.pulando = false;
+    if (player_2.y_pos >= 490 - player_2.height)
+      player_2.y_pos = 490 - player_2.height;
+    else if (player_2.y_pos < 0)
       player_2.y_pos = 0;}
 
   else if(player_2.y_pos >= 490 - player_2.height){
     player_2.y_pos = 490 - player_2.height;
-  if (player_2.x_pos >= 800 - player_1.width)
-    player_2.x_pos = 800 - player_1.width;
-  else if (player_2.x_pos < 0)
-    player_2.x_pos = 0;}
+	player_2.y_vel = 0;
+    player_2.no_ar = false;
+    player_2.pulando = false;
+    if (player_2.x_pos >= 800 - player_2.width)
+      player_2.x_pos = 800 - player_2.width;
+      else if (player_2.x_pos < 0)
+        player_2.x_pos = 0;}
 //console.log(player_1.x_pos, player_1.y_pos);
 // fim das colisões com cenário
+
 }
 
-function checarTeclas(){
+function checarTeclasP1(){
   //acoes player 1
   //tecla direita aumenta x
   if (teclas_press[39] == true){
@@ -204,43 +239,81 @@ function checarTeclas(){
   // botao soco (*)
   if(teclas_press[106] == true && player_1.agachando == false && player_1.andando == false && player_1.chute == false){
     // "recovery", golpes não podem ser "abusados"
-    recoveryDelay();
+    recoveryDelayP1();
     if(player_1.soco == false){
       player_1.soco = true;}}
   //botao chute (-)
   if(teclas_press[109] == true && player_1.agachando == false && player_1.andando == false && player_1.soco == false){
     // "recovery", golpes não podem ser "abusados"
-    recoveryDelay();
+    recoveryDelayP1();
     if(player_1.chute == false){
       player_1.chute = true;}}
 
-  //acoes player 2
-  //tecla D aumenta x
-  if (teclas_press[68] == true)
-  //tecla A diminui x
-  if(teclas_press[65] == true)
-  // tecla cima pula e diminui y
-  if(teclas_press[87] == true)
-    // tecla S agacha
-  if(teclas_press[83] == true)
-    player_2.agachando = true;
 
 }
+function checarTeclasP2(){
+	//acoes player 2
+  //tecla D aumenta x
+  if (teclas_press[68] == true){
+    if(player_2.lado_esquerdo == false && player_2.no_ar == false){
+      // defende se estiver no lado direito + anda lentamente
+      player_2.x_vel += 0.3;}
+    else if(player_2.lado_esquerdo && player_2.no_ar == false){
+      player_2.x_vel += 0.7;}
+    else if(teclas_press[87] == true && player_2.pulando == true){
+      player_2.x_vel += 0.9;}}
 
+  //tecla A diminui x
+  if(teclas_press[65] == true){
+    if(player_2.lado_esquerdo && player_2.no_ar == false){
+      player_2.x_vel -= 0.3;}
+    else if(player_2.lado_esquerdo == false && player_2.no_ar == false){
+      player_2.x_vel -= 0.7;}
+    else if(teclas_press[87] == true && player_2.pulando == true){
+      player_2.x_vel -= 0.9;}}
+
+  // tecla W pula e diminui y
+  // pulo será difícil fazer
+  if(teclas_press[87] == true && player_2.no_ar == false){
+    player_2.y_vel -= 30;
+    player_2.no_ar = true;
+    player_2.pulando = true;}
+  // tecla S agacha
+  if(teclas_press[83] == true && player_2.no_ar == false){
+    player_2.x_vel = 0;
+    player_2.agachando = true;}
+  // botao soco U
+  if(teclas_press[85] == true && player_2.agachando == false && player_2.andando == false && player_2.chute == false){
+    // "recovery", golpes não podem ser "abusados"
+    recoveryDelayP2();
+    if(player_2.soco == false){
+      player_2.soco = true;}}
+  //botao chute I
+  if(teclas_press[73] == true && player_2.agachando == false && player_2.andando == false && player_2.soco == false){
+    // "recovery", golpes não podem ser "abusados"
+    recoveryDelayP2();
+    if(player_2.chute == false){
+      player_2.chute = true;}}
+}
 function fisicaJogo(){
 
-  //"física"
   player_1.y_vel += valor_gravidade; // gravidade definida lá em cima
   player_1.y_pos += player_1.y_vel;
-  player_2.y_vel += valor_gravidade;
-  player_2.y_pos += player_1.y_vel;
   player_1.x_pos += player_1.x_vel;
-  player_2.x_pos += player_2.x_vel;
-  player_1.x_vel *= 0.9; // também chamado de atrito
-  player_2.x_vel *= 0.9; // dá o efeito de corridas com resistência
+  // também chamado de atrito
+  player_1.x_vel *= 0.9;
   player_1.y_vel *= 0.9; // sempre multiplicando por um valor menor que 1
+
+  //fisica p2
+  player_2.y_vel += valor_gravidade;
+  player_2.y_pos += player_2.y_vel;
+  player_2.x_pos += player_2.x_vel;
+  player_2.x_vel *= 0.9; // dá o efeito de corridas com resistência
   player_2.y_vel *= 0.9; // wow isso aqui é pesado pra cpu
 
+  
+ 
+  
 }
 
 function colisaoPlayers(){
@@ -266,16 +339,32 @@ function checarMovimento(){
     player_1.andando = false;
   if(player_1.x_vel == 0 || (player_1.x_vel < 1 && player_1.x_vel > -1))
     player_1.andando = false;
+
+if(player_2.x_vel != 0)
+    player_2.andando = true;
+  if(player_2.pulando == true || player_2.no_ar == true)
+    player_2.andando = false;
+  if(player_2.x_vel == 0 || (player_2.x_vel < 1 && player_2.x_vel > -1))
+    player_2.andando = false;
 }
 //funcao de recovery dos movimentos
-function recoveryDelay(){
+function recoveryDelayP1(){
   if(player_1.chute){
     // chute fica 300ms ativo, player ataca, mas fica invulnerável
     setTimeout(function(){player_1.chute = false;}, 300);}
   if(player_1.soco) {
     // mesmo para o soco
     setTimeout(function(){player_1.soco = false;}, 300);}
-  }
+}
+ //funcao de recovery dos movimentos
+function recoveryDelayP2(){
+  if(player_2.chute){
+    // chute fica 300ms ativo, player ataca, mas fica invulnerável
+    setTimeout(function(){player_2.chute = false;}, 300);}
+  if(player_2.soco) {
+    // mesmo para o soco
+    setTimeout(function(){player_2.soco = false;}, 300);}
+}
 
 
 
@@ -284,18 +373,116 @@ function comecarJogo(){
   //desenho o fundo
   ctx.drawImage(fundo_jogo, 0, 0, canvas.width, canvas.height);
   //teclas de ambos players checadas e variaveis definidas
-  checarTeclas();
+  checarTeclasP1();
+  checarTeclasP2();
   fisicaJogo();
   colisaoCenario();
   colisaoPlayers();
-  //sistemaDano();
+  sistemaDano();
   checarMovimento();
   desenharP1();
-
-  //desenharP2();
+  desenharP2();
   player_1.agachando = false;
+  player_2.agachando = false;
+
   requestAnimationFrame(comecarJogo);
 }
+
+function desenharP2(){
+    if(player_2.lado_esquerdo){
+            if(player_2.andando){
+                ctx.drawImage(player_walk,
+                    0, 0, 77, 97,  //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+                );}
+            else if(player_2.no_ar || player_2.pulando){
+                if(player_2.soco){
+                    ctx.drawImage(player_jumppunch,
+                        154, 0, 110, 97,  //posição na imagem para sprite
+                        player_2.x_pos, player_2.y_pos, player_2.width + 30, player_2.height + 10 // posição no canvas
+                    );}
+                else if(player_2.chute){
+                    ctx.drawImage(player_jumpkick,
+                        170, 0, 138, 66,  //posição na imagem para sprite
+                        player_2.x_pos, player_2.y_pos, player_2.width + 60, player_2.height - 30 // posição no canvas
+                    );}
+                else{
+                    ctx.drawImage(player_jump,
+                        0, 0, 77, 97,  //posição na imagem para sprite
+                        player_2.x_pos, player_2.y_pos, player_2.width , player_2.height // posição no canvas
+                    );}}
+            else if(player_2.agachando){
+                ctx.drawImage(player_crouch,
+                    0, 0, 77, 97,  //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+                );}
+            else if(player_2.soco){
+                ctx.drawImage(player_punch,
+                    165, 0, 116, 97,  //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width + 40, player_2.height// offset para soco
+                );}
+            else if (player_2.chute) {
+                ctx.drawImage(player_kick,
+                    340, 0, 110, 97,  //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width + 30, player_2.height // posição no canvas
+                );}
+            else if(player_2.andando == false && player_2.no_ar == false){
+                ctx.drawImage(player_stand,
+                    0, 0, 77, 97, //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+                );}}
+        else{
+            //ctx.scale(-1,1) é muito pesado pra cpu
+
+
+            if(player_2.andando){
+                ctx.drawImage(player_invwalk,
+                    0, 0, 77, 97,  //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+                );}
+            else if(player_2.no_ar || player_2.pulando){
+                if(player_2.soco){
+                    ctx.drawImage(player_invjumppunch,
+                        0, 0, 110, 97,  //posição na imagem para sprite
+                        player_2.x_pos - 30, player_2.y_pos, player_2.width + 30, player_2.height + 10 // posição no canvas
+                    );}
+                else if(player_2.chute){
+                    ctx.drawImage(player_invjumpkick,
+                        0, 0, 140, 66,  //posição na imagem para sprite
+                        player_2.x_pos - 60, player_2.y_pos, player_2.width + 60, player_2.height - 30 // posição no canvas
+                    );}
+                else{
+                    ctx.drawImage(player_invjump,
+                        0, 0, 77, 97,  //posição na imagem para sprite
+                        player_2.x_pos, player_2.y_pos, player_2.width , player_2.height // posição no canvas
+                    );}}
+            else if(player_2.agachando){
+                ctx.drawImage(player_invcrouch,
+                    0, 0, 77, 97,  //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+                );}
+            else if(player_2.soco){
+                ctx.drawImage(player_invpunch,
+                    0, 0, 110, 97,  //posição na imagem para sprite
+                    player_2.x_pos - 40, player_2.y_pos, player_2.width + 40, player_2.height// offset para soco
+                );}
+            else if (player_2.chute) {
+                ctx.drawImage(player_invkick,
+                    180, 0, 110, 97,  //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width + 30, player_2.height // posição no canvas
+                );}
+            else if(player_2.andando == false && player_2.no_ar == false){
+                ctx.drawImage(player_invstand,
+                    0, 0, 77, 97, //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+                );}}
+
+    }
+
+
+
+
+
 
 
 function desenharP1(){
@@ -331,8 +518,15 @@ function desenharP1(){
     else if(player_1.soco){
       ctx.drawImage(player_punch,
       165, 0, 116, 97,  //posição na imagem para sprite
-      player_1.x_pos, player_1.y_pos, player_1.width + 40, player_1.height// offset para soco
-      );}
+      player_1.x_pos, player_1.y_pos, player_1.width + 40, player_1.height);// offset para soco
+       // if (colisaoPlayers())
+        //{
+        //    vidap2.x -= 30;
+       // }
+
+
+
+      }
     else if (player_1.chute) {
       ctx.drawImage(player_kick,
       340, 0, 110, 97,  //posição na imagem para sprite
@@ -345,6 +539,8 @@ function desenharP1(){
       );}}
   else{
     //ctx.scale(-1,1) é muito pesado pra cpu
+
+      //17:16 E EU ESTOU ENLOUQUECENDO
       if(player_1.andando){
           ctx.drawImage(player_invwalk,
           0, 0, 77, 97,  //posição na imagem para sprite
