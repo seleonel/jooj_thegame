@@ -625,48 +625,48 @@ function colisaoMagia() {
         fireball_p1.direita = false;
         fireball_p1.esquerda = false;
     }
-    if (player_1.agachando == false) {
+    if (player_1.agachando == false && fireball_p2.na_tela ) {
         if (fireball_p2.direita) {
             if (fireball_p2.x_pos < player_1.x_pos + player_1.width && fireball_p2.x_pos + fireball_p2.width > player_1.x_pos &&
                 fireball_p2.y_pos < player_1.y_pos + player_1.height && fireball_p2.y_pos + fireball_p2.height > player_1.y_pos) {
-                vidap1.vida -= 10;
                 fireball_p2.direita = false;
                 setTimeout(function() {
+                    vidap1.vida -= 10;
                     fireball_p2.na_tela = false;
-                }, 300);
+                }, 100);
             }
         } else if (fireball_p2.esquerda) {
             if (fireball_p2.x_pos < player_1.x_pos + player_1.width && fireball_p2.x_pos + fireball_p2.width > player_1.x_pos &&
                 fireball_p2.y_pos < player_1.y_pos + player_1.height && fireball_p2.y_pos + fireball_p2.height > player_1.y_pos) {
-                vidap1.vida -= 10;
                 fireball_p2.esquerda = false;
                 setTimeout(function() {
+                    vidap1.vida -= 10;
                     fireball_p2.na_tela = false;
-                }, 300);
+                }, 100);
             }
         }
     }
 
 
 
-    if (player_2.agachando == false) {
+    if (player_2.agachando == false && fireball_p1.na_tela ) {
         if (fireball_p1.direita) {
-            if (fireball_p1.x_pos < player_2.x_pos + player_2.width && fireball_p1.x_pos + fireball_p1.width > player_2.x_pos &&
-                fireball_p1.y_pos < player_2.y_pos + player_2.height && fireball_p1.y_pos + fireball_p1.height > player_2.y_pos) {
-                vidap2.vida -= 20;
+            if (fireball_p1.x_pos < player_2.x_pos + player_2.width/2 && fireball_p1.x_pos + fireball_p1.width > player_2.x_pos &&
+                fireball_p1.y_pos < player_2.y_pos + player_2.height/2 && fireball_p1.y_pos + fireball_p1.height > player_2.y_pos) {
                 fireball_p1.direita = false;
                 setTimeout(function() {
+                    vidap2.vida -= 10;
                     fireball_p1.na_tela = false;
-                }, 300);
+                }, 100);
             }
         } else if (fireball_p1.esquerda) {
             if (fireball_p1.x_pos < player_2.x_pos + player_2.width && fireball_p1.x_pos + fireball_p1.width > player_2.x_pos &&
                 fireball_p1.y_pos < player_2.y_pos + player_2.height && fireball_p1.y_pos + fireball_p1.height > player_2.y_pos) {
-                vidap2.vida -= 20;
                 fireball_p1.esquerda = false;
                 setTimeout(function() {
+                    vidap2.vida -= 10;
                     fireball_p1.na_tela = false;
-                }, 300);
+                }, 100);
             }
         }
     }
