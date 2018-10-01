@@ -1,4 +1,0 @@
-function Sprite()
-{   //atb
-    this.
-}

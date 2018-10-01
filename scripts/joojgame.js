@@ -1,8 +1,31 @@
+/*
+ * variáveis para múltiplos propósitos, como definir o contexto para 2d,
+ *  vetor para guardar as teclas pressionadas
+ */
 var canvas = document.getElementById("canvasjooj");
 var ctx = canvas.getContext("2d");
 var teclas_press = [];
 var vitoria_canvas = new Image();
-//defino os elementos do menu
+var temp_xball;
+var temp_yball
+var temp1_xball;
+var temp1_yball
+// para desmutar a musica, jogo começa não mutado
+nao_mutado = true;
+// constante para gravidade
+valor_gravidade = 0.98;
+// variavel para a contagem de rounds (são 3)
+var contador_rounds = 0;
+// variavel para empate
+partida_empate = false;
+// são definidas as "poses" de vitória e derrota
+var vit_player = new Image();
+var derr_player = new Image();
+var pose_empate = new Image();
+vit_player.src = "images/ryuvit.png";
+derr_player.src = "images/deadryu.png";
+pose_empate.src = "images/ryuempate.png";
+//defino os elementos do menu e cenário
 var fundo_menu = new Image();
 var fundo_jogo = new Image();
 var logo_menu = new Image();
@@ -16,10 +39,31 @@ opcao_menu.src = "images/jogar.png";
 mute_button.src = "images/mute.png";
 unmute_button.src = "images/mute_2.png";
 //moldura para pontuação e mostrar vida dos jogadores
-var moldura_fase = new Image();
-moldura_fase.src = "images/moldura.png";
+var ko_p1 = new Image();
+var ko_p2 = new Image();
+var round_1 = new Image();
+var round2_1p = new Image();
+var round2_2p = new Image();
+var round2_empate = new Image();
+var round3_1pvant = new Image();
+var round3_2pvant = new Image();
+var round3_1pvic = new Image();
+var round3_2pvic = new Image();
+var round3_empate = new Image();
+var double_ko = new Image();
+round_1.src = "images/round0.png";
+round2_1p.src = "images/round1.png";
+round2_2p.src = "images/round1a.png";
+round2_empate.src = "images/round2.png";
+round3_1pvant.src = "images/ko1a.png";
+round3_2pvant.src = "images/ko2a.png";
+round3_1pvic.src = "images/ko1b.png";
+round3_2pvic.src = "images/ko2b.png";
+round3_empate.src = "images/ko3a.png";
+ko_p1.src = "images/ko1.png";
+ko_p2.src = "images/ko2.png";
+double_ko.src = "images/ko3.png"
 //imagens dos players
-// não sei se posso defini-las dentro de um vetor
 var player_stand = new Image();
 var player_crouch = new Image();
 var player_punch = new Image();
@@ -28,6 +72,8 @@ var player_walk = new Image();
 var player_kick = new Image();
 var player_jumpkick = new Image();
 var player_jumppunch = new Image();
+var player_fireball = new Image();
+player_fireball.src = "images/hado.png";
 // troca de lados
 var player_invstand = new Image();
 var player_invcrouch = new Image();
@@ -37,7 +83,10 @@ var player_invwalk = new Image();
 var player_invkick = new Image();
 var player_invjumpkick = new Image();
 var player_invjumppunch = new Image();
-// fontes das imagens
+var player_invfireball = new Image();
+// fontes das imagens/sprites dos player
+// são sprites do personagem Ryu da franquia Street Figther
+// No caso, a versão seria alpha 3
 player_stand.src = "images/pe.png";
 player_crouch.src = "images/agachando.png";
 player_punch.src = "images/soco.png";
@@ -54,146 +103,30 @@ player_invkick.src = "images/chute2side.png";
 player_invjumpkick.src = "images/chute_pulando2side.png";
 player_invjumppunch.src = "images/soco_pulando2side.png";
 player_invwalk.src = "images/andando2side.png";
-
-// spritework player2
-/*
-var player_2stand = new Image();
-var player_2crouch = new Image();
-var player_2punch = new Image();
-var player_2jump = new Image();
-var player_2walk = new Image();
-var player_2kick = new Image();
-var player_2jumpkick = new Image();
-var player_2jumppunch = new Image();
-player_2stand.src = "images/base1.png";
-player_2crouch.src = "images/down1.png";
-player_2punch.src = "images/soco1.png";
-player_2jump.src = "images/jump1.png";
-player_2kick.src = "images/chute1.png";
-player_2jumpkick.src = "images/chute1.png";
-player_2jumppunch.src = "images/soco1.png";
-player_2walk.src = "base1.png";
-*/
-// para desmutar a musica, jogo começa não mutado
-nao_mutado = true;
-// constante para gravidade
-valor_gravidade = 0.98;
-// variavel para a contagem de rounds (são 3)
-var contador_rounds = 0;
-
-
-// teclas no teclado são salvas no vetor teclas_press
-/*
- * Sem o delay de 200 ms, o sistema de vida pode ser abusado
- * Ganharia o jogador que mais segurasse o botão
- * O jeito foi "desativar" os botões de ação depois de um tempo
- */
-
-document.addEventListener("keydown", function(pressaoTec) {
-    teclas_press[pressaoTec.keyCode] = true;
-    if (teclas_press[85] || teclas_press[73] || teclas_press[109] || teclas_press[106]) {
-        setTimeout(function() {
-            teclas_press[pressaoTec.keyCode] = false;
-        }, 300);
-    } else {
-        document.addEventListener("keyup", function(pressaoTec) {
-            teclas_press[pressaoTec.keyCode] = false;
-        });
-    }
-});
-
-function resetarHP() {
-    if (contador_rounds < 3) {
-        vidap1.vida = 328;
-        player_1.x_pos = 200;
-        player_1.y_pos = 490 - 97;
-        player_1.x_vel = 0;
-        player_1.y_vel = 0;
-        vidap2.vida = 328;
-        player_2.x_pos = 600;
-        player_2.y_pos = 490 - 97;
-        player_2.x_vel = 0;
-        player_2.y_vel = 0;
-    }
-
-}
-//funcao para limpar o quadro
-function limparQuad() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-// 3 rounds, cada player tem 328 pontos de vida
-// a vida do adversário chega ao final, é garantido um round para o player
-function checarVitoria() {
-    if (contador_rounds < 3 && (player_2.rounds < 2 && player_1.rounds < 2)) {
-        if (vidap1.vida <= 0) {
-            player_2.rounds += 1;
-            contador_rounds += 1;
-            posicao_players = canvas.toDataURL();
-            resetarHP();
-        } else if (vidap2.vida <= 0) {
-            player_1.rounds += 1;
-            contador_rounds += 1;
-            posicao_players = canvas.toDataURL();
-            resetarHP();
-
-        } else if (vidap1.vida <= 0 && vidap2.vida <= 0) {
-            player_1.rounds += 1;
-            player_2.rounds += 1;
-            contador_rounds += 1;
-            resetarHP();
-            posicao_players = canvas.toDataURL();
-        }
-    } else {
-
-        telaVitoria();
-    }
-    console.log(player_1.rounds, player_2.rounds, contador_rounds)
-}
-
-
-function telaVitoria() {;
-    limparQuad();
-    vitoria_canvas.src = posicao_players;
-    ctx.drawImage(vitoria_canvas, 0, 0);
-    if (player_1.rounds == player_2.rounds) {
-        ctx.font = "30px Arial";
-        ctx.fillText("Empate", 400, 300);
-    } else if (player_1.rounds > player_2.rounds) {
-        ctx.font = "30px Arial";
-        ctx.fillText("Player 1 ganhou", 400, 300);
-    } else if (player_2.rounds > player_1.rounds) {
-        ctx.font = "30px Arial";
-        ctx.fillText("Player 2 ganhou", 400, 300);
-    }
-
-
-
-
-    requestAnimationFrame(telaVitoria);
-
-}
-
-function desenharCenario() {
-    ctx.drawImage(fundo_jogo, 0, 0, canvas.width, canvas.height);
-    ctx.drawImage(moldura_fase, 0, 0, canvas.width, canvas.height);
-}
-// personagens do jogo
+player_invfireball.src = "images/hado_2side.png";
+// fireball, ou bola de fogo
+var fireball_img = new Image();
+var fireball_inv = new Image();
+fireball_img.src = "images/fireball.png";
+fireball_inv.src = "images/fireball_2side.png";
+// personagens do jogo definidos como objetos
 // personagens tem os mesmos atributos para balanceamento
 var player_1 = {
-    x_pos: 200,
-    y_pos: 490 - 97,
-    x_vel: 0,
-    y_vel: 0,
-    width: 77,
+    x_pos: 200, //posicao ao iniciar a partida
+    y_pos: 490 - 97, // posicao no chão
+    x_vel: 0, // velocidade inicial no plano
+    y_vel: 0, // como está no chão, a velocidade é 0
+    width: 77, // tamanho padrão do sprite (não leva em conta os golpes)
     height: 97,
-    rounds: 0,
-    no_ar: false,
+    rounds: 0, // quantas rounds o jogador venceu
+    // começam as definicoes das acoes dos jogadores
+    no_ar: false, // pulando e no_ar tem suas diferenças de uso, no_ar é utilizado para gravidade
     soco: false,
     chute: false,
-    pulando: false,
+    pulando: false, // pulando para alterar golpes
     lado_esquerdo: true,
-    defendendo: false,
-    agachando: false,
+    agachando: false, // agachar define a defesa no jogo
+    vitoria: false, // para condicoes de vitoria
     andando: false
 };
 
@@ -210,11 +143,16 @@ var player_2 = {
     chute: false,
     pulando: false,
     lado_esquerdo: false,
-    defendendo: false,
     agachando: false,
+    vitoria: false,
     andando: false
 };
 
+/*
+ * vidas dos jogadores são mostradas na tela
+ *  a quantidade de vida = quantidade de pixels que ocupam
+ * tornando mais fácil o trabalho com números
+ */
 var vidap1 = {
     pos_x: 361,
     pos_y: 101,
@@ -230,6 +168,347 @@ var vidap2 = {
     height: 8,
     cor: "#f442d7"
 };
+
+var fireball_p1 = {
+    x_pos: 0,
+    y_pos: 0,
+    vel_x: 5,
+    dano: 50,
+    height: 34,
+    width: 130,
+    esquerda: false,
+    direita: false,
+    na_tela: false
+};
+var fireball_p2 = {
+    x_pos: 0,
+    y_pos: 0,
+    vel_x: 5,
+    dano: 50,
+    height: 34,
+    width: 130,
+    esquerda: false,
+    direita: false,
+    na_tela: false
+};
+// teclas no teclado são salvas no vetor teclas_press
+/*
+ * Sem o delay de 200 ms, o sistema de vida pode ser abusado
+ * Ganharia o jogador que mais segurasse o botão
+ * O jeito foi "desativar" os botões de ação depois de um tempo
+ */
+
+document.addEventListener("keydown", function(pressaoTec) {
+    teclas_press[pressaoTec.keyCode] = true;
+    if (teclas_press[85] || teclas_press[73] || teclas_press[109] || teclas_press[106] || teclas_press[79] || teclas_press[107]) {
+        clearTimeout()
+        setTimeout(function() {
+            teclas_press[pressaoTec.keyCode] = false;
+        }, 300);
+    } else {
+        document.addEventListener("keyup", function(pressaoTec) {
+            teclas_press[pressaoTec.keyCode] = false;
+        });
+    }
+});
+
+function checarTeclasP1() {
+    //acoes player 1
+    //tecla direita aumenta x
+    if (teclas_press[39] == true) {
+        if (player_1.lado_esquerdo == false && player_1.no_ar == false) {
+            // defende se estiver no lado direito + anda lentamente
+            player_1.x_vel += 0.3;
+        } else if (player_1.lado_esquerdo && player_1.no_ar == false) {
+            player_1.x_vel += 0.7;
+        } else if (teclas_press[38] == true && player_1.pulando == true) {
+            player_1.x_vel += 0.9;
+        }
+    }
+    //tecla esquerda diminui x
+    if (teclas_press[37] == true) {
+        if (player_1.lado_esquerdo && player_1.no_ar == false) {
+            player_1.x_vel -= 0.3;
+        } else if (player_1.lado_esquerdo == false && player_1.no_ar == false) {
+            player_1.x_vel -= 0.7;
+        } else if (teclas_press[38] == true && player_1.pulando == true) {
+            player_1.x_vel -= 0.9;
+        }
+    }
+
+    // tecla cima pula e diminui y
+    // pulo será difícil fazer
+    if (teclas_press[38] == true && player_1.no_ar == false) {
+        player_1.y_vel -= 30;
+        player_1.no_ar = true;
+        player_1.pulando = true;
+    }
+    // tecla baixo agacha
+    if (teclas_press[40] == true && player_1.no_ar == false) {
+        player_1.x_vel = 0;
+        player_1.agachando = true;
+    } else {
+        player_1.agachando = false;
+
+    }
+    // botao soco (*)
+    if (teclas_press[106] == true && player_1.agachando == false && player_1.andando == false && player_1.chute == false) {
+        // "recovery", golpes não podem ser "abusados"
+        recoveryDelayP1();
+        if (player_1.soco == false) {
+            player_1.soco = true;
+        }
+    }
+    //botao chute (-)
+    if (teclas_press[109] == true && player_1.agachando == false && player_1.andando == false && player_1.soco == false) {
+        // "recovery", golpes não podem ser "abusados"
+        recoveryDelayP1();
+        if (player_1.chute == false) {
+            player_1.chute = true;
+        }
+    }
+
+
+
+
+    // tecla + lança a magia
+    if (teclas_press[107] && player_1.andando == false && player_1.no_ar == false && fireball_p1.na_tela == false) {
+        temp1_xball = player_1.x_pos;
+        temp1_yball = player_1.y_pos;
+        fireball_p1.x_pos = temp1_xball;
+        fireball_p1.y_pos = temp1_yball;
+        setTimeout(function() {
+            if (player_1.lado_esquerdo)
+                fireball_p1.esquerda = true;
+            else
+                fireball_p1.direita = true;
+            fireball_p1.na_tela = true;
+
+        }, 300);
+
+
+    }
+}
+
+function checarTeclasP2() {
+    //acoes player 2
+    //tecla D aumenta x
+    if (teclas_press[68] == true) {
+        if (player_1.lado_esquerdo && player_2.no_ar == false) {
+            // defende se estiver no lado direito + anda lentamente
+            player_2.x_vel += 0.3;
+        } else if (player_1.lado_esquerdo == false && player_2.no_ar == false) {
+            player_2.x_vel += 0.7;
+        } else if (teclas_press[87] == true && player_2.pulando == true) {
+            player_2.x_vel += 0.9;
+        }
+    }
+    //tecla A diminui x
+    if (teclas_press[65] == true) {
+        if (player_1.lado_esquerdo == false && player_2.no_ar == false) {
+            player_2.x_vel -= 0.3;
+        } else if (player_1.lado_esquerdo && player_2.no_ar == false) {
+            player_2.x_vel -= 0.7;
+        } else if (teclas_press[87] == true && player_2.pulando == true) {
+            player_2.x_vel -= 0.9;
+        }
+    }
+
+    // tecla W pula e diminui y
+    // pulo será difícil fazer
+    if (teclas_press[87] == true && player_2.no_ar == false) {
+        player_2.y_vel -= 30;
+        player_2.no_ar = true;
+        player_2.pulando = true;
+    }
+    // tecla S agacha
+    if (teclas_press[83] == true && player_2.no_ar == false) {
+        player_2.x_vel = 0;
+        player_2.agachando = true;
+    } else {
+        player_2.agachando = false;
+
+    }
+    // botao soco U
+    if (teclas_press[85] == true && player_2.agachando == false && player_2.andando == false && player_2.chute == false) {
+        // "recovery", golpes não podem ser "abusados"
+        recoveryDelayP2();
+        if (player_2.soco == false) {
+            player_2.soco = true;
+        }
+    }
+    //botao chute I
+    if (teclas_press[73] == true && player_2.agachando == false && player_2.andando == false && player_2.soco == false) {
+        // "recovery", golpes não podem ser "abusados"
+        recoveryDelayP2();
+        if (player_2.chute == false) {
+            player_2.chute = true;
+        }
+    }
+    // tecla O lança a magia
+    if (teclas_press[79] && player_2.andando == false && player_2.no_ar == false && fireball_p2.na_tela == false) {
+        temp_xball = player_2.x_pos;
+        temp_yball = player_2.y_pos;
+        fireball_p2.x_pos = temp_xball;
+        fireball_p2.y_pos = temp_yball;
+        setTimeout(function() {
+            if (player_1.lado_esquerdo)
+                fireball_p2.direita = true;
+            else
+                fireball_p2.esquerda = true;
+            fireball_p2.na_tela = true;
+
+        }, 300);
+
+    }
+}
+
+function resetarJogo() {
+    window.cancelAnimationFrame(comecarJogo);
+    setTimeout(function() {
+        window.location.reload(false);
+    }, 5000)
+
+}
+
+function resetarHP() {
+    if (player_1.rounds < 2 && player_2.rounds < 2) {
+        vidap1.vida = 328;
+        player_1.x_pos = 200;
+        player_1.y_pos = 490 - 97;
+        player_1.x_vel = 0;
+        player_1.y_vel = 0;
+        vidap2.vida = 328;
+        player_2.x_pos = 600;
+        player_2.y_pos = 490 - 97;
+        player_2.x_vel = 0;
+        player_2.y_vel = 0;
+    }
+}
+//funcao para limpar o quadro
+function limparQuad() {
+    ctx.clearRect(0, 0, 800, 600);
+}
+// 3 rounds, cada player tem 328 pontos de vida
+// a vida do adversário chega ao final, é garantido um round para o player
+function checarVitoria() {
+    if (contador_rounds < 3 && (player_2.rounds < 2 && player_1.rounds < 2)) {
+        if (vidap1.vida <= 0) {
+            player_2.rounds += 1;
+            contador_rounds += 1;
+            resetarHP();
+
+        } else if (vidap2.vida <= 0) {
+            ctx.drawImage(ko_p2, 0, 0, canvas.width, canvas.height);
+            player_1.rounds += 1;
+            contador_rounds += 1;
+            resetarHP();
+
+        } else if (vidap1.vida <= 0 && vidap2.vida <= 0) {
+            player_1.rounds += 1;
+            player_2.rounds += 1;
+            contador_rounds += 1;
+            resetarHP();
+        }
+    } else {
+        if (player_1.rounds > player_2.rounds) {
+            player_1.vitoria = true;
+        } else if (player_2.rounds > player_1.rounds) {
+            player_2.vitoria = true;
+
+        } else {
+            partida_empate = true;
+        }
+        telaVitoria();
+    }
+}
+
+
+function telaVitoria() {
+    limparQuad();
+    desenharCenario();
+    if (player_1.vitoria) {
+        ctx.drawImage(derr_player,
+            400, 490 - 34
+        );
+        ctx.drawImage(vit_player,
+            300, 490 - 119
+        );
+
+    } else if (player_2.vitoria) {
+        ctx.drawImage(vit_player,
+            300, 490 - 119
+        );
+        ctx.drawImage(derr_player,
+            400, 490 - 34
+        );
+
+    } else if (partida_empate) {
+        ctx.drawImage(partida_empate,
+            200, 490 - 97
+        );
+        ctx.drawImage(partida_empate,
+            600, 490 - 97
+        );
+
+    }
+
+    resetarJogo();
+}
+
+function desenharCenario() {
+    ctx.drawImage(fundo_jogo, 0, 0, canvas.width, canvas.height);
+    if (contador_rounds == 1) {
+        if (player_1.rounds == player_2.rounds) {
+            ctx.drawImage(round2_empate, 0, 0, canvas.width, canvas.height);
+
+
+        } else if (player_1.rounds > player_2.rounds) {
+            ctx.drawImage(round2_1p, 0, 0, canvas.width, canvas.height);
+
+        } else {
+            ctx.drawImage(round2_2p, 0, 0, canvas.width, canvas.height);
+
+        }
+
+    } else if (contador_rounds == 2) {
+        if (player_1.rounds == player_2.rounds) {
+            ctx.drawImage(round2_empate, 0, 0, canvas.width, canvas.height);
+
+
+        } else if (player_1.rounds > player_2.rounds) {
+            if (player_2.rounds == 0) {
+                ctx.drawImage(round3_1pvant, 0, 0, canvas.width, canvas.height);
+
+            }
+        } else {
+            if (player_1.rounds == 0) {
+                ctx.drawImage(round3_2pvant, 0, 0, canvas.width, canvas.height);
+            }
+
+        }
+
+
+    } else if (contador_rounds == 3) {
+        if (player_1.rounds == player_2.rounds) {
+            ctx.drawImage(round3_empate, 0, 0, canvas.width, canvas.height);
+
+        } else if (player_1.rounds > player_2.rounds) {
+
+            ctx.drawImage(round3_1pvic, 0, 0, canvas.width, canvas.height);
+
+        } else {
+
+            ctx.drawImage(round3_2pvic, 0, 0, canvas.width, canvas.height);
+
+
+        }
+
+
+    } else if (contador_rounds == 0) {
+        ctx.drawImage(round_1, 0, 0, canvas.width, canvas.height);
+    }
+}
 
 function desenharBarras() {
     ctx.fillStyle = vidap1.cor;
@@ -249,9 +528,9 @@ function sistemaDano() {
                 } else if (player_1.soco && Math.floor(player_1.y_pos) >= (Math.floor(player_2.y_pos) - player_2.height - 5)) {
                     vidap2.vida -= 1;
                 }
-                if (player_1.chute && player_1.no_ar == false) {
+                if (player_1.chute && player_1.no_ar == false && player_2.no_ar == false) {
                     vidap2.vida -= 2;
-                } else if (player_1.chute && Math.floor(player_1.y_pos) >= (Math.floor(player_2.y_pos) - player_2.height - 5)) {
+                } else if (player_1.chute && player_1.no_ar && Math.floor(player_1.y_pos) >= (Math.floor(player_2.y_pos) - player_2.height - 5)) {
                     vidap2.vida -= 2;
                 }
             }
@@ -262,9 +541,9 @@ function sistemaDano() {
                 } else if (player_1.soco && Math.floor(player_1.y_pos) >= (Math.floor(player_2.y_pos) - player_2.height - 5)) {
                     vidap2.vida -= 1;
                 }
-                if (player_1.chute && player_1.no_ar == false) {
+                if (player_1.chute && player_1.no_ar == false && player_2.no_ar == false) {
                     vidap2.vida -= 2;
-                } else if (player_1.chute && Math.floor(player_1.y_pos) >= (Math.floor(player_2.y_pos) - player_2.height - 5)) {
+                } else if (player_1.chute && player_1.no_ar && Math.floor(player_1.y_pos) >= (Math.floor(player_2.y_pos) - player_2.height - 5)) {
                     vidap2.vida -= 2;
                 }
 
@@ -279,9 +558,9 @@ function sistemaDano() {
                 } else if (player_2.soco && Math.floor(player_2.y_pos) >= (Math.floor(player_1.y_pos) - player_1.height - 5)) {
                     vidap1.vida -= 1;
                 }
-                if (player_2.chute && player_2.no_ar == false) {
+                if (player_2.chute && player_2.no_ar == false && player_1.no_ar == false) {
                     vidap1.vida -= 2;
-                } else if (player_2.chute && Math.floor(player_2.y_pos) >= (Math.floor(player_1.y_pos) - player_1.height - 5)) {
+                } else if (player_2.chute && player_2.no_ar && Math.floor(player_2.y_pos) >= (Math.floor(player_1.y_pos) - player_1.height - 5)) {
                     vidap1.vida -= 2;
                 }
             }
@@ -292,11 +571,94 @@ function sistemaDano() {
                 } else if (player_2.soco && Math.floor(player_2.y_pos) >= (Math.floor(player_1.y_pos) - player_1.height - 5)) {
                     vidap1.vida -= 1;
                 }
-                if (player_2.chute && player_2.no_ar == false) {
+                if (player_2.chute && player_2.no_ar == false && player_1.no_ar == false) {
                     vidap1.vida -= 2;
-                } else if (player_2.chute && Math.floor(player_2.y_pos) >= (Math.floor(player_1.y_pos) - player_1.height - 5)) {
+                } else if (player_2.chute && player_2.no_ar && Math.floor(player_2.y_pos) >= (Math.floor(player_1.y_pos) - player_1.height - 5)) {
                     vidap1.vida -= 2;
                 }
+            }
+        }
+    }
+}
+
+function desenharMagia() {
+    if (fireball_p2.na_tela && fireball_p2.direita) {
+        ctx.drawImage(fireball_inv,
+            fireball_p2.x_pos, fireball_p2.y_pos
+        );
+    } else if (fireball_p2.na_tela && fireball_p2.esquerda) {
+        ctx.drawImage(fireball_img,
+            fireball_p2.x_pos, fireball_p2.y_pos
+
+        );
+    }
+
+    if (fireball_p1.na_tela && fireball_p1.direita) {
+        ctx.drawImage(fireball_inv,
+            fireball_p1.x_pos, fireball_p1.y_pos
+        );
+    } else if (fireball_p1.na_tela && fireball_p1.esquerda) {
+        ctx.drawImage(fireball_img,
+            fireball_p1.x_pos, fireball_p1.y_pos
+
+        );
+    }
+
+}
+
+function colisaoMagia() {
+    if (fireball_p2.x_pos >= 800) {
+        fireball_p2.na_tela = false;
+        fireball_p2.direita = false;
+        fireball_p2.esquerda = false;
+    } else if (fireball_p2.x_pos < 0 - fireball_p2.width) {
+        fireball_p2.na_tela = false;
+        fireball_p2.direita = false;
+        fireball_p2.esquerda = false;
+    }
+    if (fireball_p1.x_pos >= 800) {
+        fireball_p1.na_tela = false;
+        fireball_p1.direita = false;
+        fireball_p1.esquerda = false;
+    } else if (fireball_p1.x_pos < 0 - fireball_p1.width) {
+        fireball_p1.na_tela = false;
+        fireball_p1.direita = false;
+        fireball_p1.esquerda = false;
+    }
+    if (player_1.agachando == false) {
+        if (fireball_p2.direita) {
+            if (fireball_p2.x_pos < player_1.x_pos + player_1.width && fireball_p2.x_pos + fireball_p2.width > player_1.x_pos &&
+                fireball_p2.y_pos < player_1.y_pos + player_1.height && fireball_p2.y_pos + fireball_p2.height > player_1.y_pos) {
+                vidap1.vida -= 20;
+                fireball_p2.na_tela = false;
+                fireball_p2.direita = false;
+            }
+        } else if (fireball_p2.esquerda) {
+            if (fireball_p2.x_pos < player_1.x_pos + player_1.width && fireball_p2.x_pos + fireball_p2.width > player_1.x_pos &&
+                fireball_p2.y_pos < player_1.y_pos + player_1.height && fireball_p2.y_pos + fireball_p2.height > player_1.y_pos) {
+                vidap1.vida -= 20;
+                fireball_p2.na_tela = false;
+                fireball_p2.esquerda = false;
+            }
+        }
+    }
+
+
+
+    if (player_2.agachando == false) {
+        if (fireball_p1.direita) {
+            if (fireball_p1.x_pos < player_2.x_pos + player_2.width && fireball_p1.x_pos + fireball_p1.width > player_2.x_pos &&
+                fireball_p1.y_pos < player_2.y_pos + player_2.height && fireball_p1.y_pos + fireball_p1.height > player_2.y_pos) {
+                vidap2.vida -= 20;
+                fireball_p1.na_tela = false;
+                fireball_p1.direita = false;
+            }
+        } else if (fireball_p1.esquerda) {
+            if (fireball_p1.x_pos < player_2.x_pos + player_2.width && fireball_p1.x_pos + fireball_p1.width > player_2.x_pos &&
+                fireball_p1.y_pos < player_2.y_pos + player_2.height && fireball_p1.y_pos + fireball_p1.height > player_2.y_pos) {
+                vidap2.vida -= 20;
+                fireball_p1.na_tela = false;
+                fireball_p1.esquerda = false;
             }
         }
     }
@@ -364,118 +726,6 @@ function colisaoCenario() {
 
 }
 
-function checarTeclasP1() {
-    //acoes player 1
-    //tecla direita aumenta x
-    if (teclas_press[39] == true) {
-        if (player_1.lado_esquerdo == false && player_1.no_ar == false) {
-            // defende se estiver no lado direito + anda lentamente
-            player_1.x_vel += 0.3;
-        } else if (player_1.lado_esquerdo && player_1.no_ar == false) {
-            player_1.x_vel += 0.7;
-        } else if (teclas_press[38] == true && player_1.pulando == true) {
-            player_1.x_vel += 0.9;
-        }
-    }
-
-    //tecla esquerda diminui x
-    if (teclas_press[37] == true) {
-        if (player_1.lado_esquerdo && player_1.no_ar == false) {
-            player_1.x_vel -= 0.3;
-        } else if (player_1.lado_esquerdo == false && player_1.no_ar == false) {
-            player_1.x_vel -= 0.7;
-        } else if (teclas_press[38] == true && player_1.pulando == true) {
-            player_1.x_vel -= 0.9;
-        }
-    }
-
-    // tecla cima pula e diminui y
-    // pulo será difícil fazer
-    if (teclas_press[38] == true && player_1.no_ar == false) {
-        player_1.y_vel -= 30;
-        player_1.no_ar = true;
-        player_1.pulando = true;
-    }
-    // tecla baixo agacha
-    if (teclas_press[40] == true && player_1.no_ar == false) {
-        player_1.x_vel = 0;
-        player_1.agachando = true;
-    }
-    // botao soco (*)
-    if (teclas_press[106] == true && player_1.agachando == false && player_1.andando == false && player_1.chute == false) {
-        // "recovery", golpes não podem ser "abusados"
-        recoveryDelayP1();
-        if (player_1.soco == false) {
-            player_1.soco = true;
-        }
-    }
-    //botao chute (-)
-    if (teclas_press[109] == true && player_1.agachando == false && player_1.andando == false && player_1.soco == false) {
-        // "recovery", golpes não podem ser "abusados"
-        recoveryDelayP1();
-        if (player_1.chute == false) {
-            player_1.chute = true;
-        }
-    }
-
-
-}
-
-function checarTeclasP2() {
-    //acoes player 2
-    //tecla D aumenta x
-    if (teclas_press[68] == true) {
-        if (player_1.lado_esquerdo && player_2.no_ar == false) {
-            // defende se estiver no lado direito + anda lentamente
-            player_2.x_vel += 0.3;
-        } else if (player_1.lado_esquerdo == false && player_2.no_ar == false) {
-            player_2.x_vel += 0.7;
-        } else if (teclas_press[87] == true && player_2.pulando == true) {
-            player_2.x_vel += 0.9;
-        }
-    }
-
-    //tecla A diminui x
-    if (teclas_press[65] == true) {
-        if (player_1.lado_esquerdo == false && player_2.no_ar == false) {
-            player_2.x_vel -= 0.3;
-        } else if (player_1.lado_esquerdo && player_2.no_ar == false) {
-            player_2.x_vel -= 0.7;
-        } else if (teclas_press[87] == true && player_2.pulando == true) {
-            player_2.x_vel -= 0.9;
-        }
-    }
-
-    // tecla W pula e diminui y
-    // pulo será difícil fazer
-    if (teclas_press[87] == true && player_2.no_ar == false) {
-        player_2.y_vel -= 30;
-        player_2.no_ar = true;
-        player_2.pulando = true;
-    }
-    // tecla S agacha
-    if (teclas_press[83] == true && player_2.no_ar == false) {
-        player_2.x_vel = 0;
-        player_2.agachando = true;
-    }
-    // botao soco U
-    if (teclas_press[85] == true && player_2.agachando == false && player_2.andando == false && player_2.chute == false) {
-        // "recovery", golpes não podem ser "abusados"
-        recoveryDelayP2();
-        if (player_2.soco == false) {
-            player_2.soco = true;
-        }
-    }
-    //botao chute I
-    if (teclas_press[73] == true && player_2.agachando == false && player_2.andando == false && player_2.soco == false) {
-        // "recovery", golpes não podem ser "abusados"
-        recoveryDelayP2();
-        if (player_2.chute == false) {
-            player_2.chute = true;
-        }
-    }
-}
-
 function fisicaJogo() {
 
     player_1.y_vel += valor_gravidade; // gravidade definida lá em cima
@@ -492,9 +742,16 @@ function fisicaJogo() {
     player_2.x_vel *= 0.9; // dá o efeito de corridas com resistência
     player_2.y_vel *= 0.9; // essas iterações constantes são pesadas para a cpu
 
+    // fisica das magias
+    if (fireball_p2.direita)
+        fireball_p2.x_pos -= fireball_p2.vel_x;
+    else if (fireball_p2.esquerda)
+        fireball_p2.x_pos += fireball_p2.vel_x;
 
-
-
+    if (fireball_p1.direita)
+        fireball_p1.x_pos -= fireball_p1.vel_x;
+    else if (fireball_p1.esquerda)
+        fireball_p1.x_pos += fireball_p1.vel_x;
 }
 
 function colisaoPlayers() {
@@ -517,7 +774,7 @@ function colisaoPlayers() {
         }
         if (player_1.pulando) {
             if ((Math.floor(player_1.x_pos) > (Math.floor(player_2.x_pos) - (player_2.width / 2))) && (Math.floor(player_1.y_pos) >= (Math.floor(player_2.y_pos) - (player_2.height - 30)))) {
-                player_1.x_vel += 5;
+                player_1.x_vel += 3;
             }
         }
         if (player_2.andando) {
@@ -531,7 +788,7 @@ function colisaoPlayers() {
         }
         if (player_2.pulando) {
             if ((Math.floor(player_2.x_pos) < (Math.floor(player_1.x_pos) + (player_1.width / 2))) && (Math.floor(player_2.y_pos) >= (Math.floor(player_1.y_pos) - (player_1.height - 30)))) {
-                player_2.x_vel -= 5;
+                player_2.x_vel -= 3;
             }
         }
 
@@ -546,7 +803,7 @@ function colisaoPlayers() {
         }
         if (player_2.pulando) {
             if ((Math.floor(player_2.x_pos) > (Math.floor(player_1.x_pos) - (player_1.width / 2))) && (Math.floor(player_2.y_pos) >= (Math.floor(player_1.y_pos) - (player_1.height - 30)))) {
-                player_2.x_vel += 5;
+                player_2.x_vel += 3;
             }
         }
         if (player_1.andando) {
@@ -561,7 +818,7 @@ function colisaoPlayers() {
         }
         if (player_1.pulando) {
             if ((Math.floor(player_1.x_pos) < (Math.floor(player_2.x_pos) + (player_2.width / 2))) && (Math.floor(player_1.y_pos) >= (Math.floor(player_2.y_pos) - (player_2.height - 30)))) {
-                player_1.x_vel -= 5;
+                player_1.x_vel -= 3;
             }
         }
     }
@@ -607,6 +864,7 @@ function recoveryDelayP1() {
 
 //funcao de recovery dos movimentos do player 2
 function recoveryDelayP2() {
+
     if (player_2.chute) {
         // o tempo é o mesmo para ambos os players
         // para princípios de balanceamento
@@ -632,15 +890,15 @@ function comecarJogo() {
     checarMovimento();
     colisaoPlayers();
     colisaoCenario();
+    colisaoMagia();
     checarTeclasP1();
     checarTeclasP2();
     fisicaJogo();
+    desenharMagia();
     desenharP1();
     desenharP2();
     sistemaDano();
     desenharBarras();
-    player_1.agachando = false;
-    player_2.agachando = false;
     checarVitoria();
     requestAnimationFrame(comecarJogo);
 }
@@ -685,10 +943,16 @@ function desenharP2() {
                 player_2.x_pos, player_2.y_pos, player_2.width + 30, player_2.height // posição no canvas
             );
         } else if (player_2.andando == false && player_2.no_ar == false) {
-            ctx.drawImage(player_stand,
-                0, 0, 77, 97, //posição na imagem para sprite
-                player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
-            );
+            if (fireball_p2.na_tela) {
+                ctx.drawImage(player_fireball,
+                    player_2.x_pos, player_2.y_pos, 113, player_2.height // posição no canvas
+                );
+            } else {
+                ctx.drawImage(player_stand,
+                    0, 0, 77, 97, //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+                );
+            }
         }
     } else {
         //ctx.scale(-1,1) é muito pesado pra cpu
@@ -732,10 +996,16 @@ function desenharP2() {
                 player_2.x_pos, player_2.y_pos, player_2.width + 30, player_2.height // posição no canvas
             );
         } else if (player_2.andando == false && player_2.no_ar == false) {
-            ctx.drawImage(player_invstand,
-                0, 0, 77, 97, //posição na imagem para sprite
-                player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
-            );
+            if (fireball_p2.na_tela) {
+                ctx.drawImage(player_invfireball,
+                    player_2.x_pos, player_2.y_pos, 113, player_2.height // posição no canvas
+                );
+            } else {
+                ctx.drawImage(player_invstand,
+                    0, 0, 77, 97, //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+                );
+            }
         }
     }
 
@@ -743,9 +1013,10 @@ function desenharP2() {
 
 
 function desenharP1() {
-    // como desenhar de acordo com as ações
 
+    // como desenhar de acordo com as ações
     if (player_1.lado_esquerdo) {
+
         if (player_1.andando) {
             ctx.drawImage(player_walk,
                 0, 0, 77, 97, //posição na imagem para sprite
@@ -784,11 +1055,19 @@ function desenharP1() {
                 player_1.x_pos, player_1.y_pos, player_1.width + 30, player_1.height // posição no canvas
             );
         } else if (player_1.andando == false && player_1.no_ar == false) {
-            ctx.drawImage(player_stand,
-                0, 0, 77, 97, //posição na imagem para sprite
-                player_1.x_pos, player_1.y_pos, player_1.width, player_1.height // posição no canvas
-            );
+            if (fireball_p1.na_tela) {
+                ctx.drawImage(player_fireball,
+                    player_1.x_pos, player_1.y_pos, 113, player_1.height // posição no canvas
+                );
+            } else {
+                ctx.drawImage(player_stand,
+                    0, 0, 77, 97, //posição na imagem para sprite
+                    player_1.x_pos, player_1.y_pos, player_1.width, player_1.height // posição no canvas
+                );
+            }
         }
+
+
     } else {
         // ctx.scale(-1,1) é muito pesado pra cpu
         // definir na mão os sprites economiza mais RAM
@@ -830,10 +1109,16 @@ function desenharP1() {
                 player_1.x_pos, player_1.y_pos, player_1.width + 30, player_1.height // posição no canvas
             );
         } else if (player_1.andando == false && player_1.no_ar == false) {
-            ctx.drawImage(player_invstand,
-                0, 0, 77, 97, //posição na imagem para sprite
-                player_1.x_pos, player_1.y_pos, player_1.width, player_1.height // posição no canvas
-            );
+            if (fireball_p1.na_tela) {
+                ctx.drawImage(player_invfireball,
+                    player_1.x_pos, player_1.y_pos, 113, player_1.height // posição no canvas
+                );
+            } else {
+                ctx.drawImage(player_invstand,
+                    0, 0, 77, 97, //posição na imagem para sprite
+                    player_1.x_pos, player_1.y_pos, player_1.width, player_1.height // posição no canvas
+                );
+            }
         }
     }
 
@@ -859,6 +1144,7 @@ function menuPrincipal() {
 
 
     if (teclas_press[13] == true) {
+        cancelAnimationFrame(menuPrincipal);
         comecarJogo();
     } else {
         requestAnimationFrame(menuPrincipal);
