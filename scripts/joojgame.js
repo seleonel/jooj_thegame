@@ -629,16 +629,20 @@ function colisaoMagia() {
         if (fireball_p2.direita) {
             if (fireball_p2.x_pos < player_1.x_pos + player_1.width && fireball_p2.x_pos + fireball_p2.width > player_1.x_pos &&
                 fireball_p2.y_pos < player_1.y_pos + player_1.height && fireball_p2.y_pos + fireball_p2.height > player_1.y_pos) {
-                vidap1.vida -= 20;
-                fireball_p2.na_tela = false;
+                vidap1.vida -= 10;
                 fireball_p2.direita = false;
+                setTimeout(function() {
+                    fireball_p2.na_tela = false;
+                }, 300);
             }
         } else if (fireball_p2.esquerda) {
             if (fireball_p2.x_pos < player_1.x_pos + player_1.width && fireball_p2.x_pos + fireball_p2.width > player_1.x_pos &&
                 fireball_p2.y_pos < player_1.y_pos + player_1.height && fireball_p2.y_pos + fireball_p2.height > player_1.y_pos) {
-                vidap1.vida -= 20;
-                fireball_p2.na_tela = false;
+                vidap1.vida -= 10;
                 fireball_p2.esquerda = false;
+                setTimeout(function() {
+                    fireball_p2.na_tela = false;
+                }, 300);
             }
         }
     }
@@ -650,15 +654,19 @@ function colisaoMagia() {
             if (fireball_p1.x_pos < player_2.x_pos + player_2.width && fireball_p1.x_pos + fireball_p1.width > player_2.x_pos &&
                 fireball_p1.y_pos < player_2.y_pos + player_2.height && fireball_p1.y_pos + fireball_p1.height > player_2.y_pos) {
                 vidap2.vida -= 20;
-                fireball_p1.na_tela = false;
                 fireball_p1.direita = false;
+                setTimeout(function() {
+                    fireball_p1.na_tela = false;
+                }, 300);
             }
         } else if (fireball_p1.esquerda) {
             if (fireball_p1.x_pos < player_2.x_pos + player_2.width && fireball_p1.x_pos + fireball_p1.width > player_2.x_pos &&
                 fireball_p1.y_pos < player_2.y_pos + player_2.height && fireball_p1.y_pos + fireball_p1.height > player_2.y_pos) {
                 vidap2.vida -= 20;
-                fireball_p1.na_tela = false;
                 fireball_p1.esquerda = false;
+                setTimeout(function() {
+                    fireball_p1.na_tela = false;
+                }, 300);
             }
         }
     }
