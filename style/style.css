@@ -16,14 +16,13 @@ body {
   margin: auto;
   display: block;
   position: fixed;
-  background-color: white;
 
 }
 
 
 .titulos {
   background-color:#f442a7;
-  color: black;
+  color: white;
   font-size: 16px;
   text-align: left;
   padding: 1px 20px;
@@ -32,7 +31,7 @@ body {
 }
 .bigtitulos {
   background-color:#f442a7;
-  color: black;
+  color: white;
   font-size: 26px;
   text-align: left;
   padding: 1px 20px;
@@ -41,6 +40,7 @@ body {
 
 }
 
+
 .toperson {
   position: relative;
   overflow: hidden;
@@ -48,14 +48,30 @@ body {
 
 }
 
+.explanation{
+
+  color: white;
+  background-color: black;
+  margin: auto;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+.explanation h3{
+    color: black;
+    background-color: #ff9bf3;
+
+}
+
 
 .botaorev{
   color: black;
-  background-color: #e58737;
+  background-color: #f442a7;
   width: 100%;
   padding: 40px 0px;
 
 }
+
 .botaorev button{
   color: black;
   border: none;

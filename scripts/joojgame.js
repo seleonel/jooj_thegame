@@ -153,6 +153,7 @@ var player_2 = {
  *  a quantidade de vida = quantidade de pixels que ocupam
  * tornando mais fácil o trabalho com números
  */
+
 var vidap1 = {
     pos_x: 361,
     pos_y: 101,
@@ -191,6 +192,12 @@ var fireball_p2 = {
     direita: false,
     na_tela: false
 };
+
+//funcao para limpar o quadro
+function limparQuad() {
+    ctx.clearRect(0, 0, 800, 600);
+}
+
 // teclas no teclado são salvas no vetor teclas_press
 /*
  * Sem o delay de 200 ms, o sistema de vida pode ser abusado
@@ -268,9 +275,6 @@ function checarTeclasP1() {
         }
     }
 
-
-
-
     // tecla + lança a magia
     if (teclas_press[107] && player_1.andando == false && player_1.no_ar == false && fireball_p1.na_tela == false) {
         temp1_xball = player_1.x_pos;
@@ -285,7 +289,6 @@ function checarTeclasP1() {
             fireball_p1.na_tela = true;
 
         }, 300);
-
 
     }
 }
@@ -385,10 +388,7 @@ function resetarHP() {
         player_2.y_vel = 0;
     }
 }
-//funcao para limpar o quadro
-function limparQuad() {
-    ctx.clearRect(0, 0, 800, 600);
-}
+
 // 3 rounds, cada player tem 328 pontos de vida
 // a vida do adversário chega ao final, é garantido um round para o player
 function checarVitoria() {
@@ -500,23 +500,12 @@ function desenharCenario() {
         } else {
 
             ctx.drawImage(round3_2pvic, 0, 0, canvas.width, canvas.height);
-
-
         }
 
 
     } else if (contador_rounds == 0) {
         ctx.drawImage(round_1, 0, 0, canvas.width, canvas.height);
     }
-}
-
-function desenharBarras() {
-    ctx.fillStyle = vidap1.cor;
-    ctx.fillRect(vidap1.pos_x, vidap1.pos_y, -vidap1.vida, vidap1.height);
-    ctx.fillStyle = vidap2.cor;
-    ctx.fillRect(vidap2.pos_x, vidap2.pos_y, vidap2.vida, vidap2.height);
-
-
 }
 
 function sistemaDano() {
@@ -581,29 +570,32 @@ function sistemaDano() {
     }
 }
 
-function desenharMagia() {
-    if (fireball_p2.na_tela && fireball_p2.direita) {
-        ctx.drawImage(fireball_inv,
-            fireball_p2.x_pos, fireball_p2.y_pos
-        );
-    } else if (fireball_p2.na_tela && fireball_p2.esquerda) {
-        ctx.drawImage(fireball_img,
-            fireball_p2.x_pos, fireball_p2.y_pos
+function fisicaJogo() {
 
-        );
-    }
+    player_1.y_vel += valor_gravidade; // gravidade definida lá em cima
+    player_1.y_pos += player_1.y_vel;
+    player_1.x_pos += player_1.x_vel;
+    // também chamado de atrito
+    player_1.x_vel *= 0.9;
+    player_1.y_vel *= 0.9; // sempre multiplicando por um valor menor que 1
 
-    if (fireball_p1.na_tela && fireball_p1.direita) {
-        ctx.drawImage(fireball_inv,
-            fireball_p1.x_pos, fireball_p1.y_pos
-        );
-    } else if (fireball_p1.na_tela && fireball_p1.esquerda) {
-        ctx.drawImage(fireball_img,
-            fireball_p1.x_pos, fireball_p1.y_pos
+    //fisica p2
+    player_2.y_vel += valor_gravidade;
+    player_2.y_pos += player_2.y_vel;
+    player_2.x_pos += player_2.x_vel;
+    player_2.x_vel *= 0.9; // dá o efeito de corridas com resistência
+    player_2.y_vel *= 0.9; // essas iterações constantes são pesadas para a cpu
 
-        );
-    }
+    // fisica das magias
+    if (fireball_p2.direita)
+        fireball_p2.x_pos -= fireball_p2.vel_x;
+    else if (fireball_p2.esquerda)
+        fireball_p2.x_pos += fireball_p2.vel_x;
 
+    if (fireball_p1.direita)
+        fireball_p1.x_pos -= fireball_p1.vel_x;
+    else if (fireball_p1.esquerda)
+        fireball_p1.x_pos += fireball_p1.vel_x;
 }
 
 function colisaoMagia() {
@@ -625,7 +617,7 @@ function colisaoMagia() {
         fireball_p1.direita = false;
         fireball_p1.esquerda = false;
     }
-    if (player_1.agachando == false && fireball_p2.na_tela ) {
+    if (player_1.agachando == false && fireball_p2.na_tela) {
         if (fireball_p2.direita) {
             if (fireball_p2.x_pos < player_1.x_pos + player_1.width && fireball_p2.x_pos + fireball_p2.width > player_1.x_pos &&
                 fireball_p2.y_pos < player_1.y_pos + player_1.height && fireball_p2.y_pos + fireball_p2.height > player_1.y_pos) {
@@ -649,10 +641,10 @@ function colisaoMagia() {
 
 
 
-    if (player_2.agachando == false && fireball_p1.na_tela ) {
+    if (player_2.agachando == false && fireball_p1.na_tela) {
         if (fireball_p1.direita) {
-            if (fireball_p1.x_pos < player_2.x_pos + player_2.width/2 && fireball_p1.x_pos + fireball_p1.width > player_2.x_pos &&
-                fireball_p1.y_pos < player_2.y_pos + player_2.height/2 && fireball_p1.y_pos + fireball_p1.height > player_2.y_pos) {
+            if (fireball_p1.x_pos < player_2.x_pos + player_2.width / 2 && fireball_p1.x_pos + fireball_p1.width > player_2.x_pos &&
+                fireball_p1.y_pos < player_2.y_pos + player_2.height / 2 && fireball_p1.y_pos + fireball_p1.height > player_2.y_pos) {
                 fireball_p1.direita = false;
                 setTimeout(function() {
                     vidap2.vida -= 10;
@@ -732,34 +724,6 @@ function colisaoCenario() {
     //console.log(player_1.x_pos, player_1.y_pos);
     // fim das colisões com cenário
 
-}
-
-function fisicaJogo() {
-
-    player_1.y_vel += valor_gravidade; // gravidade definida lá em cima
-    player_1.y_pos += player_1.y_vel;
-    player_1.x_pos += player_1.x_vel;
-    // também chamado de atrito
-    player_1.x_vel *= 0.9;
-    player_1.y_vel *= 0.9; // sempre multiplicando por um valor menor que 1
-
-    //fisica p2
-    player_2.y_vel += valor_gravidade;
-    player_2.y_pos += player_2.y_vel;
-    player_2.x_pos += player_2.x_vel;
-    player_2.x_vel *= 0.9; // dá o efeito de corridas com resistência
-    player_2.y_vel *= 0.9; // essas iterações constantes são pesadas para a cpu
-
-    // fisica das magias
-    if (fireball_p2.direita)
-        fireball_p2.x_pos -= fireball_p2.vel_x;
-    else if (fireball_p2.esquerda)
-        fireball_p2.x_pos += fireball_p2.vel_x;
-
-    if (fireball_p1.direita)
-        fireball_p1.x_pos -= fireball_p1.vel_x;
-    else if (fireball_p1.esquerda)
-        fireball_p1.x_pos += fireball_p1.vel_x;
 }
 
 function colisaoPlayers() {
@@ -888,137 +852,39 @@ function recoveryDelayP2() {
     }
 }
 
+function desenharBarras() {
+    ctx.fillStyle = vidap1.cor;
+    ctx.fillRect(vidap1.pos_x, vidap1.pos_y, -vidap1.vida, vidap1.height);
+    ctx.fillStyle = vidap2.cor;
+    ctx.fillRect(vidap2.pos_x, vidap2.pos_y, vidap2.vida, vidap2.height);
 
 
-function comecarJogo() {
-    limparQuad();
-    //desenho o fundo
-    desenharCenario();
-    //teclas de ambos players checadas e variaveis definidas
-    checarMovimento();
-    colisaoPlayers();
-    colisaoCenario();
-    colisaoMagia();
-    checarTeclasP1();
-    checarTeclasP2();
-    fisicaJogo();
-    desenharMagia();
-    desenharP1();
-    desenharP2();
-    sistemaDano();
-    desenharBarras();
-    checarVitoria();
-    requestAnimationFrame(comecarJogo);
 }
 
-function desenharP2() {
-    if (player_1.lado_esquerdo == false) {
-        if (player_2.andando) {
-            ctx.drawImage(player_walk,
-                0, 0, 77, 97, //posição na imagem para sprite
-                player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
-            );
-        } else if (player_2.no_ar || player_2.pulando) {
-            if (player_2.soco) {
-                ctx.drawImage(player_jumppunch,
-                    154, 0, 110, 97, //posição na imagem para sprite
-                    player_2.x_pos, player_2.y_pos, player_2.width + 30, player_2.height + 10 // posição no canvas
-                );
-            } else if (player_2.chute) {
-                ctx.drawImage(player_jumpkick,
-                    170, 0, 138, 66, //posição na imagem para sprite
-                    player_2.x_pos, player_2.y_pos, player_2.width + 60, player_2.height - 30 // posição no canvas
-                );
-            } else {
-                ctx.drawImage(player_jump,
-                    0, 0, 77, 97, //posição na imagem para sprite
-                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
-                );
-            }
-        } else if (player_2.agachando) {
-            ctx.drawImage(player_crouch,
-                0, 0, 77, 97, //posição na imagem para sprite
-                player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
-            );
-        } else if (player_2.soco) {
-            ctx.drawImage(player_punch,
-                165, 0, 116, 97, //posição na imagem para sprite
-                player_2.x_pos, player_2.y_pos, player_2.width + 40, player_2.height // offset para soco
-            );
-        } else if (player_2.chute) {
-            ctx.drawImage(player_kick,
-                340, 0, 110, 97, //posição na imagem para sprite
-                player_2.x_pos, player_2.y_pos, player_2.width + 30, player_2.height // posição no canvas
-            );
-        } else if (player_2.andando == false && player_2.no_ar == false) {
-            if (fireball_p2.na_tela) {
-                ctx.drawImage(player_fireball,
-                    player_2.x_pos, player_2.y_pos, 113, player_2.height // posição no canvas
-                );
-            } else {
-                ctx.drawImage(player_stand,
-                    0, 0, 77, 97, //posição na imagem para sprite
-                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
-                );
-            }
-        }
-    } else {
-        //ctx.scale(-1,1) é muito pesado pra cpu
+function desenharMagia() {
+    if (fireball_p2.na_tela && fireball_p2.direita) {
+        ctx.drawImage(fireball_inv,
+            fireball_p2.x_pos, fireball_p2.y_pos
+        );
+    } else if (fireball_p2.na_tela && fireball_p2.esquerda) {
+        ctx.drawImage(fireball_img,
+            fireball_p2.x_pos, fireball_p2.y_pos
 
+        );
+    }
 
-        if (player_2.andando) {
-            ctx.drawImage(player_invwalk,
-                0, 0, 77, 97, //posição na imagem para sprite
-                player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
-            );
-        } else if (player_2.no_ar || player_2.pulando) {
-            if (player_2.soco) {
-                ctx.drawImage(player_invjumppunch,
-                    0, 0, 110, 97, //posição na imagem para sprite
-                    player_2.x_pos - 30, player_2.y_pos, player_2.width + 30, player_2.height + 10 // posição no canvas
-                );
-            } else if (player_2.chute) {
-                ctx.drawImage(player_invjumpkick,
-                    0, 0, 140, 66, //posição na imagem para sprite
-                    player_2.x_pos - 60, player_2.y_pos, player_2.width + 60, player_2.height - 30 // posição no canvas
-                );
-            } else {
-                ctx.drawImage(player_invjump,
-                    0, 0, 77, 97, //posição na imagem para sprite
-                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
-                );
-            }
-        } else if (player_2.agachando) {
-            ctx.drawImage(player_invcrouch,
-                0, 0, 77, 97, //posição na imagem para sprite
-                player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
-            );
-        } else if (player_2.soco) {
-            ctx.drawImage(player_invpunch,
-                0, 0, 110, 97, //posição na imagem para sprite
-                player_2.x_pos - 40, player_2.y_pos, player_2.width + 40, player_2.height // offset para soco
-            );
-        } else if (player_2.chute) {
-            ctx.drawImage(player_invkick,
-                180, 0, 110, 97, //posição na imagem para sprite
-                player_2.x_pos, player_2.y_pos, player_2.width + 30, player_2.height // posição no canvas
-            );
-        } else if (player_2.andando == false && player_2.no_ar == false) {
-            if (fireball_p2.na_tela) {
-                ctx.drawImage(player_invfireball,
-                    player_2.x_pos, player_2.y_pos, 113, player_2.height // posição no canvas
-                );
-            } else {
-                ctx.drawImage(player_invstand,
-                    0, 0, 77, 97, //posição na imagem para sprite
-                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
-                );
-            }
-        }
+    if (fireball_p1.na_tela && fireball_p1.direita) {
+        ctx.drawImage(fireball_inv,
+            fireball_p1.x_pos, fireball_p1.y_pos
+        );
+    } else if (fireball_p1.na_tela && fireball_p1.esquerda) {
+        ctx.drawImage(fireball_img,
+            fireball_p1.x_pos, fireball_p1.y_pos
+
+        );
     }
 
 }
-
 
 function desenharP1() {
 
@@ -1132,6 +998,134 @@ function desenharP1() {
 
 }
 
+function desenharP2() {
+    if (player_1.lado_esquerdo == false) {
+        if (player_2.andando) {
+            ctx.drawImage(player_walk,
+                0, 0, 77, 97, //posição na imagem para sprite
+                player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+            );
+        } else if (player_2.no_ar || player_2.pulando) {
+            if (player_2.soco) {
+                ctx.drawImage(player_jumppunch,
+                    154, 0, 110, 97, //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width + 30, player_2.height + 10 // posição no canvas
+                );
+            } else if (player_2.chute) {
+                ctx.drawImage(player_jumpkick,
+                    170, 0, 138, 66, //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width + 60, player_2.height - 30 // posição no canvas
+                );
+            } else {
+                ctx.drawImage(player_jump,
+                    0, 0, 77, 97, //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+                );
+            }
+        } else if (player_2.agachando) {
+            ctx.drawImage(player_crouch,
+                0, 0, 77, 97, //posição na imagem para sprite
+                player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+            );
+        } else if (player_2.soco) {
+            ctx.drawImage(player_punch,
+                165, 0, 116, 97, //posição na imagem para sprite
+                player_2.x_pos, player_2.y_pos, player_2.width + 40, player_2.height // offset para soco
+            );
+        } else if (player_2.chute) {
+            ctx.drawImage(player_kick,
+                340, 0, 110, 97, //posição na imagem para sprite
+                player_2.x_pos, player_2.y_pos, player_2.width + 30, player_2.height // posição no canvas
+            );
+        } else if (player_2.andando == false && player_2.no_ar == false) {
+            if (fireball_p2.na_tela) {
+                ctx.drawImage(player_fireball,
+                    player_2.x_pos, player_2.y_pos, 113, player_2.height // posição no canvas
+                );
+            } else {
+                ctx.drawImage(player_stand,
+                    0, 0, 77, 97, //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+                );
+            }
+        }
+    } else {
+        //ctx.scale(-1,1) é muito pesado pra cpu
+
+
+        if (player_2.andando) {
+            ctx.drawImage(player_invwalk,
+                0, 0, 77, 97, //posição na imagem para sprite
+                player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+            );
+        } else if (player_2.no_ar || player_2.pulando) {
+            if (player_2.soco) {
+                ctx.drawImage(player_invjumppunch,
+                    0, 0, 110, 97, //posição na imagem para sprite
+                    player_2.x_pos - 30, player_2.y_pos, player_2.width + 30, player_2.height + 10 // posição no canvas
+                );
+            } else if (player_2.chute) {
+                ctx.drawImage(player_invjumpkick,
+                    0, 0, 140, 66, //posição na imagem para sprite
+                    player_2.x_pos - 60, player_2.y_pos, player_2.width + 60, player_2.height - 30 // posição no canvas
+                );
+            } else {
+                ctx.drawImage(player_invjump,
+                    0, 0, 77, 97, //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+                );
+            }
+        } else if (player_2.agachando) {
+            ctx.drawImage(player_invcrouch,
+                0, 0, 77, 97, //posição na imagem para sprite
+                player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+            );
+        } else if (player_2.soco) {
+            ctx.drawImage(player_invpunch,
+                0, 0, 110, 97, //posição na imagem para sprite
+                player_2.x_pos - 40, player_2.y_pos, player_2.width + 40, player_2.height // offset para soco
+            );
+        } else if (player_2.chute) {
+            ctx.drawImage(player_invkick,
+                180, 0, 110, 97, //posição na imagem para sprite
+                player_2.x_pos, player_2.y_pos, player_2.width + 30, player_2.height // posição no canvas
+            );
+        } else if (player_2.andando == false && player_2.no_ar == false) {
+            if (fireball_p2.na_tela) {
+                ctx.drawImage(player_invfireball,
+                    player_2.x_pos, player_2.y_pos, 113, player_2.height // posição no canvas
+                );
+            } else {
+                ctx.drawImage(player_invstand,
+                    0, 0, 77, 97, //posição na imagem para sprite
+                    player_2.x_pos, player_2.y_pos, player_2.width, player_2.height // posição no canvas
+                );
+            }
+        }
+    }
+
+}
+
+function comecarJogo() {
+    limparQuad();
+    //desenho o fundo
+    desenharCenario();
+    //teclas de ambos players checadas e variaveis definidas
+    checarMovimento();
+    colisaoPlayers();
+    colisaoCenario();
+    colisaoMagia();
+    checarTeclasP1();
+    checarTeclasP2();
+    fisicaJogo();
+    desenharMagia();
+    desenharP1();
+    desenharP2();
+    sistemaDano();
+    desenharBarras();
+    checarVitoria();
+    requestAnimationFrame(comecarJogo);
+}
 
 function menuPrincipal() {
     //desenhar fundo
