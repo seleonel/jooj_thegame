@@ -5,6 +5,11 @@
 var canvas = document.getElementById("canvasjooj");
 var ctx = canvas.getContext("2d");
 var teclas_press = [];
+var musica_alergs;
+var musica_menu;
+musica_alergs.loop = true;
+musica_alergs = new sound("music/jungle1.ogg");
+musica_menu = new sound("music/1a.ogg");
 // para desmutar a musica, jogo começa não mutado
 nao_mutado = true;
 // constante para gravidade
@@ -627,7 +632,7 @@ function colisaoMagia() {
         if (fireball_p2.direita) {
             if (fireball_p2.x_pos < player_1.x_pos + player_1.width && fireball_p2.x_pos + fireball_p2.width > player_1.x_pos && // aqui é utilizado o sistema de "bounding box"
                 fireball_p2.y_pos < player_1.y_pos + player_1.height && fireball_p2.y_pos + fireball_p2.height > player_1.y_pos) { // se um objeto estiver dentro dos espaços entre as coordenadas
-                fireball_p2.direita = false;                                                                                       // automaticamente estarão se tocando
+                fireball_p2.direita = false; // automaticamente estarão se tocando
                 setTimeout(function() {
                     vidap1.vida -= 10;
                     player_1.x_vel -= 5;
@@ -646,11 +651,11 @@ function colisaoMagia() {
             }
         }
     }
-/*
-* Se repete para o P2
-*  Comentar seria redundante
-* A redução de vida é a mesma
-*/
+    /*
+     * Se repete para o P2
+     *  Comentar seria redundante
+     * A redução de vida é a mesma
+     */
 
 
     if (player_2.agachando == false && fireball_p1.na_tela) {
@@ -1119,8 +1124,25 @@ function desenharP2() {
     }
 
 }
+// funcao para som, retirada do W3schools
+// não é tão bem explicada, mas um objeto para som é criado, só então o mesmo pode ser referenciado depois
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function() {
+        this.sound.play();
+    }
+    this.stop = function() {
+        this.sound.pause();
+    }
+}
 
 function comecarJogo() {
+    musica_alergs.play();
     limparQuad();
     //desenho o fundo
     desenharCenario();
@@ -1142,6 +1164,7 @@ function comecarJogo() {
 }
 
 function menuPrincipal() {
+    musica_menu.play();
     //desenhar fundo
     ctx.drawImage(fundo_menu, 0, 0, canvas.width, canvas.height);
     //desenhar logo
@@ -1156,11 +1179,13 @@ function menuPrincipal() {
         ctx.drawImage(mute_button, 700, 500, 50, 50);
     } else {
         ctx.drawImage(unmute_button, 700, 500, 50, 50);
+        musica_menu.stop();
     }
 
 
     if (teclas_press[13] == true) {
         cancelAnimationFrame(menuPrincipal);
+        musica_menu.stop();
         comecarJogo();
     } else {
         requestAnimationFrame(menuPrincipal);
