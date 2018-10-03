@@ -461,29 +461,25 @@ function telaVitoria() {
 }
 
 function desenharCenario() {
+    // o cenário não é dinâmico, ajudando na troca das molduras
     ctx.drawImage(fundo_jogo, 0, 0, canvas.width, canvas.height);
     if (contador_rounds == 1) {
-        if (player_1.rounds == player_2.rounds) {
+        if (player_1.rounds == player_2.rounds) { // empate num primeiro round
             ctx.drawImage(round2_empate, 0, 0, canvas.width, canvas.height);
-
 
         } else if (player_1.rounds > player_2.rounds) {
             ctx.drawImage(round2_1p, 0, 0, canvas.width, canvas.height);
 
         } else {
             ctx.drawImage(round2_2p, 0, 0, canvas.width, canvas.height);
-
         }
-
     } else if (contador_rounds == 2) {
         if (player_1.rounds == player_2.rounds) {
             ctx.drawImage(round2_empate, 0, 0, canvas.width, canvas.height);
 
-
         } else if (player_1.rounds > player_2.rounds) {
             if (player_2.rounds == 0) {
                 ctx.drawImage(round3_1pvant, 0, 0, canvas.width, canvas.height);
-
             }
         } else {
             if (player_1.rounds == 0) {
@@ -491,7 +487,6 @@ function desenharCenario() {
             }
 
         }
-
 
     } else if (contador_rounds == 3) {
         if (player_1.rounds == player_2.rounds) {
@@ -610,16 +605,16 @@ function fisicaJogo() {
 }
 
 function colisaoMagia() {
-    if (fireball_p2.x_pos >= 800) {
-        fireball_p2.na_tela = false;
-        fireball_p2.direita = false;
+    if (fireball_p2.x_pos >= 800) { // magia passa da largura no eixo X
+        fireball_p2.na_tela = false; // deixa de aparecer
+        fireball_p2.direita = false; // não tem mais nenhum estado
         fireball_p2.esquerda = false;
-    } else if (fireball_p2.x_pos < 0 - fireball_p2.width) {
+    } else if (fireball_p2.x_pos < 0 - fireball_p2.width) { // largura mínima para X
         fireball_p2.na_tela = false;
         fireball_p2.direita = false;
         fireball_p2.esquerda = false;
     }
-    if (fireball_p1.x_pos >= 800) {
+    if (fireball_p1.x_pos >= 800) { // mesmo válido para P1
         fireball_p1.na_tela = false;
         fireball_p1.direita = false;
         fireball_p1.esquerda = false;
@@ -630,9 +625,9 @@ function colisaoMagia() {
     }
     if (player_1.agachando == false && fireball_p2.na_tela) {
         if (fireball_p2.direita) {
-            if (fireball_p2.x_pos < player_1.x_pos + player_1.width && fireball_p2.x_pos + fireball_p2.width > player_1.x_pos &&
-                fireball_p2.y_pos < player_1.y_pos + player_1.height && fireball_p2.y_pos + fireball_p2.height > player_1.y_pos) {
-                fireball_p2.direita = false;
+            if (fireball_p2.x_pos < player_1.x_pos + player_1.width && fireball_p2.x_pos + fireball_p2.width > player_1.x_pos && // aqui é utilizado o sistema de "bounding box"
+                fireball_p2.y_pos < player_1.y_pos + player_1.height && fireball_p2.y_pos + fireball_p2.height > player_1.y_pos) { // se um objeto estiver dentro dos espaços entre as coordenadas
+                fireball_p2.direita = false;                                                                                       // automaticamente estarão se tocando
                 setTimeout(function() {
                     vidap1.vida -= 10;
                     player_1.x_vel -= 5;
@@ -651,7 +646,11 @@ function colisaoMagia() {
             }
         }
     }
-
+/*
+* Se repete para o P2
+*  Comentar seria redundante
+* A redução de vida é a mesma
+*/
 
 
     if (player_2.agachando == false && fireball_p1.na_tela) {
@@ -698,8 +697,8 @@ function colisaoCenario() {
         if (player_1.y_pos >= 490 - player_1.height) {
             player_1.y_pos = 490 - player_1.height;
             player_1.y_vel = 0;
-            player_1.no_ar = false;
-            player_1.pulando = false;
+            player_1.no_ar = false; // ao tocar no chão, player 1 perde o estado "no ar"
+            player_1.pulando = false; // e também o "pulando"
             recoveryDelayP1();
         } else if (player_1.y_pos < 0)
             player_1.y_pos = 0;
@@ -745,7 +744,7 @@ function colisaoPlayers() {
     // colisões entre players
     // posição dos sprites
     if (player_1.x_pos > (player_2.x_pos + player_2.width)) {
-        player_1.lado_esquerdo = false;
+        player_1.lado_esquerdo = false; // será considerado no lado esquerdo o player 1 cujas coordenadas no eixo x sejam menores que as do P2
     } else if (player_1.x_pos < (player_2.x_pos - player_2.width)) {
         player_1.lado_esquerdo = true;
 
@@ -753,7 +752,7 @@ function colisaoPlayers() {
     if (player_1.lado_esquerdo) {
         if (player_1.andando) {
             if (Math.floor(player_2.x_pos) < (Math.floor(player_1.x_pos) + player_1.width)) {
-                player_2.x_pos = player_2.x_pos;
+                player_2.x_pos = player_2.x_pos; //posição continua a mesma da anterior
             }
             if (Math.floor(player_1.x_pos) > (Math.floor(player_2.x_pos) - player_2.width)) {
                 player_1.x_pos = player_2.x_pos - player_2.width
@@ -761,7 +760,7 @@ function colisaoPlayers() {
         }
         if (player_1.pulando) {
             if ((Math.floor(player_1.x_pos) > (Math.floor(player_2.x_pos) - (player_2.width / 2))) && (Math.floor(player_1.y_pos) >= (Math.floor(player_2.y_pos) - (player_2.height - 30)))) {
-                player_1.x_vel += 3;
+                player_1.x_vel += 3; // se o jogador cair na área em que as colisões laterais não ocorram, o jogador "deslizará" para frente ou para trás
             }
         }
         if (player_2.andando) {

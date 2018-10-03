@@ -60,7 +60,10 @@
             <p>A função new Image() cria uma nova imagem e a assigna à uma variável, a fonte dessa imagem é definida posteriormente.</p>
         </div>
         <br>
-        <img src="images/defimagens.png" height="30%" width="30%"><img src="images/defimagens2.png" height="50%" width="30%">
+        <img src="images/defimagens.png" height="50%" width="50%">
+        <br>
+        <br>
+        <img src="images/defimagens2.png" height="55%" width="55%">
         <br>
         <p class="legenda">Longa lista de declarações de variáveis para as imagens usadas no jogo: posições, ações e reações. As declarações vão das linhas 22 até 112</p>
         <p class="legenda">Há uma forma de automatizar isso?</p>
@@ -69,9 +72,11 @@
         <div class="titulos">
             <h3>Objetos</h3>
         </div>
+        <br>
+        <br>
         <div class="textos">
             <p> Objetos em javascript funcionam de forma semelhante como nas outras linguagens. Tratam-se de variáveis que aceitam mais de um valor diferente para múltiplas "classes", essas
-            por sua vez, podem receber variados valores para depois serem referênciadas ao longo do código.</p>
+                por sua vez, podem receber variados valores para depois serem referênciadas ao longo do código.</p>
             <p>Os objetos são declarados de acordo com sua ordem de relevância.</p>
         </div>
         <br>
@@ -81,8 +86,8 @@
         </div>
         <div class="textos">
             <p> Uma das partes mais importantes do jogo, é definida a posição inicial de cada player, bem como seu conjunto de ações e estados, no caso
-            golpes e etc. O tamanho médio do sprite define parte da "hitbox", onde mais tarde serão comparadas para fins de definir colisões. Deve ser destacada
-        a importância da variável lado_esquerdo, uma vez que apenas um jogador pode estar no lado esquerdo por vez. Frequentemente é o lado "oficial" do Player 1 nos jogos de luta.</p>
+                golpes e etc. O tamanho médio do sprite define parte da "hitbox", onde mais tarde serão comparadas para fins de definir colisões. Deve ser destacada
+                a importância da variável lado_esquerdo, uma vez que apenas um jogador pode estar no lado esquerdo por vez. Frequentemente é o lado "oficial" do Player 1 nos jogos de luta.</p>
         </div>
         <img src="images/obj1.png" height="50%" width="50%">
         <p class="legenda">Os players têm suas ações definidas, e nelas são usados os tipos booleanos "true" e "false"</p>
@@ -91,7 +96,7 @@
         </div>
         <div class="textos">
             <p>A barra de Vida/HP é definida pela quantidade de pixels que toma, ou seja, todo o dano recebido por um jogador
-            é diretamente retirado da quantidade de pixels. No caso, cada jogador tem 328 pontos de vida.</p>
+                é diretamente retirado da quantidade de pixels. No caso, cada jogador tem 328 pontos de vida.</p>
         </div>
         <img src="images/obj2.png" height="50%" width="50%">
         <div class="explanation">
@@ -99,11 +104,11 @@
         </div>
         <div class="textos">
             <p>As fireballs são independentes dos players exceto por um fator, a posição no eixo X. Essa é a posição onde surgirão no momento
-            em que forem utilizadas. Para evitar valores indefinidos, essas posições são inicializadas com 0.</p>
+                em que forem utilizadas. Para evitar valores indefinidos, essas posições são inicializadas com 0.</p>
         </div>
         <img src="images/obj3.png" height="50%" width="50%">
         <p class="legenda">Uma fireball, vindo da esquerda, se manterá naquele lado e o mesmo para a direita. A troca de sprites é definida a partir
-        do valor dessa variável no momento.</p>
+            do valor dessa variável no momento.</p>
         <br>
         <br>
         <div class="titulos">
@@ -131,114 +136,152 @@
         <div class="titulos">
             <h3>Sistema de colisão</h3>
         </div>
-        <div class="textos"></div>
+        <div class="textos">
+            <p> O sistema de colisão parte do princípio do "bounding box", onde ocorre constantemente a comparação entre os deltas
+                das coordenadas X e Y de diferentes objetos.</p>
+        </div>
         <div class="explanation">
             <h3>Players e cenário</h3>
         </div>
-        <div class="textos"></div>
+        <div class="textos">
+            <p>Colisão simples que se utiliza dos limites do canvas e das alturas e larguras dos sprites.</p>
+            <p>É fortemente influenciado pela física do jogo, uma vez que quando um jogador toca o "chão", não está mais no ar.</p>
+        </div>
+        <img src="images/colisaocen.png" width="50%" height="50%"></img>
+        <p class="legenda">O recovery também é chamado para resetar quaisquer golpes que ainda estejam ocorrendo no ar, e resetar as variáveis.</p>
+        <br>
+        <br>
         <div class="explanation">
             <h3>Players e players</h3>
         </div>
-        <div class="textos"></div>
+        <div class="textos">
+            <p>A colisão entre players é checada para ambos os casos em que um jogador possa estar no lado esquerdo ou direito, para ambos os oponentes.</p>
+            <p>Quando um jogador realiza o "jump-in", sua transição para o outro lado da arena é com o aumento de velocidade, evitando, assim, bugs relacionados ao posicionamento entre as hitboxes.</p>
+        </div>
+        <img src="images/colisaoplayers.png" width="70%" height="60%"></img>
+        <br>
+        <br>
         <div class="explanation">
             <h3>Fireballs e players</h3>
         </div>
-        <div class="textos"></div>
+        <div class="textos">
+            <p>As magias perdem seu estado "true" quando passam dos limites do mapa, podendo ser reusadas pelos jogadores.</p>
+            <p>Aqui é definido o dano gradual e o knockback, que no caso é alteração da velocidade do adversário.</p>
+        </div>
+        <img src="images/colisaomagia.png"></img>
+        <br>
+        <br>
+        <img src="images/colisaomagia2.png" width="80%" height="80%"></img>
+        <p class="legenda">Para impedir o "spam" de fireballs, é usada a API de timeout, onde a função de resetar a variável só ocorre depois de 100 milissegundos.</p>
         <br>
         <br>
         <div class="titulos">
             <h3>Detecção das teclas no teclado</h3>
         </div>
-
+        <br>
+        <br>
+        <img src="images/teclasdec1.png"></img>
+        <br>
+        <br>
+        <img src="images/teclasdec2.png" width="70%" height="70%"></img>
         <div class="explanation">
             <h3>Como é feita</h3>
         </div>
-        <div class="textos"></div>
+        <div class="textos">
+            <p>Ocorre por meio da detecçao dos chamados eventos numa página de javascript. Nessa ocasião, quando uma tecla é apertada e solta. No primeiro caso, o número de uma tecla é guardado como índice de um vetor, com o booleano "true".
+                Quando solta, a tecla ganha o atributo "false".</p>
+            <p>Muitas condições são checadas para que brechas não sejam exploradas. Um jogador, por exemplo não pode usar seus golpes enquanto anda. Suas velocidades de caminhada e pulo são definidas aqui também.</p>
+        </div>
         <br>
         <br>
         <div class="titulos">
             <h3>Desenhando os players(jogadores)</h3>
         </div>
-        <div class="textos"></div>
+        <div class="textos">
+            <p>Novamente definido pelo lado em que o jogador se encontra. Funciona de forma inversa com o Player 2. Os sprites invertidos vão para quem está do lado esquerdo.</p>
+            <p>Uma propriedade diferente é usada em ctx.drawImage, as posições no sprite são definidas, uma vez que a spritesheet é longa. Na maioria das vezes, a altura continua a mesma, entretanto.</p>
+        </div>
+        <img src="images/desenharplayers.png" width="70%" height="70%"></img><img src="images/desenharplayers2.png" width="70%" height="70%"></img>
+        <p class="legenda">O último caso checado é quando o personagem está "em espera", também chamado de idle, está parado.</p>
         <br>
         <br>
         <div class="titulos">
             <h3>Desenhando as magias</h3>
         </div>
-        <div class="textos"></div>
+        <div class="textos">
+            <p>A posição da magia é definida na função de física, sua direção depende do lado em que foi "usada".</p>
+        </div>
+        <img src="images/desenharmagia.png" width="50%" height="50%"></img>
+        <br>
         <br>
         <br>
         <div class="titulos">
             <h3>Desenhando elementos do cenário</h3>
         </div>
-        <div class="textos"></div>
-        <div class="explanation">
-            <h3>Moldura</h3>
+        <div class="textos">
+            <p> O cenário é sempre desenhado, entretanto a contagem de rounds de cada jogador é que define qual moldura será utilizada. Por ser apenas imagem, não ocorre perda de performance.</p>
         </div>
-        <div class="textos"></div>
-        <div class="explanation">
-            <h3>Rounds</h3>
-        </div>
-        <div class="textos"></div>
-        <div class="explanation">
-            <h3>Cenário</h3>
-        </div>
-        <div class="textos"></div>
-        <div class="explanation">
-            <h3>Tela de KO</h3>
-        </div>
-        <div class="textos"></div>
+        <img src="images/desenharcen.png" width="60%" height="60%"></img>
         <br>
         <br>
-        <div class="titulos">
-            <h3>Definindo o lado na tela</h3>
-        </div>
-        <div class="textos"></div>
-        <div class="explanation">
-            <h3>Posição no eixo X</h3>
-        </div>
-        <div class="textos"></div>
+        <img src="images/desenharcen1.png" width="60%" height="60%"></img>
+        <p class="legenda">Os raros casos em que podem ocorrer empates são considerados.</p>
         <br>
         <br>
         <div class="titulos">
             <h3>Sistema de recovery</h3>
         </div>
-        <div class="textos"></div>
+        <br>
+        <br>
+        <img src="images/recovery.png" width="60%" height="60%"></img>
+        <br>
+        <br>
         <div class="explanation">
-            <h3>Uma explicação mais técnica</h3>
+            <h3>Uma breve explicação</h3>
         </div>
-        <div class="textos"></div>
+        <div class="textos">
+            <p>"Recovery" ou recuperação é um método de balanceamento dos jogos de luta. Golpes são divididos em frames de início, ativos e recuperação, que é o tempo que
+            um personagem tem de atraso até a próxima ação. Isso garante que golpes não sejam abusados com demasia.</p>
+            <p>setTimeout não é a função mais adequada a isso, mas acredito que em JavaScript puro, não tenha algo que possa executar esse "recovery" de forma melhor.</p>
+        </div>
         <br>
         <br>
         <div class="titulos">
             <h3>Cálculo da vitória</h3>
         </div>
-        <div class="textos"></div>
-        <div class="explanation">
-            <h3>Rounds</h3>
+        <div class="textos">
+            <p></p>
         </div>
-        <div class="textos"></div>
         <div class="explanation">
             <h3>Vida</h3>
         </div>
-        <div class="textos"></div>
-        <div class="explanation">
-            <h3>Empate</h3>
+        <div class="textos">
+            <p>Os golpes, quando acertados num jogador que não está defendendo, tiram vida gradualmente. Esse tempo controlado pelo timeout setado nos eventos de teclas. Um round é dado ao jogador que tira toda a vida do oponente. Ambas as barras acabando ao mesmo tempo implica um empate.</p>
+            <p>A vida e as posições são resetadas (resetarHP()) para o começo. Mas agora com um ponto para quem ganhou o round anterior.</p>
         </div>
-        <div class="textos"></div>
+        <img src="images/checarVit.png" width="60%" height="60%"></img><br><br><img src="images/resetHP.png" width="60%" height="60%"><br><br><img src="images/telavit.png" width="50%" height="50%">
         <br>
         <br>
         <div class="titulos">
             <h3>Menu Principal e o reset do jogo</h3>
         </div>
-        <div class="textos"></div>
+        <div class="textos">
+            <p>Chamada pela função checarVitoria(), a função resetarJogo() força uma atualização na tela, uma vez que o retorno pro main não se mostra efetivo. No caso, o estado do canvas não resetava. Atualizar a página é mais conveniente.</p>
+            <p>Voltando para o menu, o usuário tem a opção de apertar enter para continuar.</p>
+        </div>
+        <img src="images/resetar.png" width="70%" height="70%"></img><br><br><img src="images/menu.png" width="70%" height="70%"></img>
         <br>
         <br>
         <div class="titulos">
             <h3>A função comecarJogo()</h3>
         </div>
-        <div class="textos"></div>
+        <div class="textos">
+            <p>A função comecarJogo() se tornou a função mais importante do programa/jogo, serve de conglomerado para todas as outras funções, e basicamente dita a continuidade do jogo. Ela que recebe o requestAnimationFrame, função para animação em 60fps do canvas.</p>
+        </div>
 
+        <img src="images/comecarJogo.png" width="60%" height="60%"></img>
+        <br>
+        <br>
 
 
     </div>
