@@ -7,9 +7,9 @@ var ctx = canvas.getContext("2d");
 var teclas_press = [];
 var musica_alergs;
 var musica_menu;
-musica_alergs.loop = true;
 musica_alergs = new sound("music/jungle1.ogg");
 musica_menu = new sound("music/1a.ogg");
+musica_alergs.loop = true;
 // para desmutar a musica, jogo começa não mutado
 nao_mutado = true;
 // constante para gravidade
