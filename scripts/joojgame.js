@@ -511,9 +511,11 @@ function desenharCenario() {
 function sistemaDano() {
     if (player_2.agachando == false) {
         if (player_1.lado_esquerdo) {
-            if (Math.floor(player_1.x_pos) >= (Math.floor(player_2.x_pos) - player_2.width)) {
+            if (Math.floor(player_1.x_pos) >= (Math.floor(player_2.x_pos) - player_2.width - 20)) {
                 if (player_1.soco && player_1.no_ar == false) {
                     vidap2.vida -= 1;
+                    player_2.x_vel += 2;
+
                 } else if (player_1.soco && Math.floor(player_1.y_pos) >= (Math.floor(player_2.y_pos) - player_2.height - 5)) {
                     vidap2.vida -= 1;
                 }
@@ -524,11 +526,13 @@ function sistemaDano() {
                 }
             }
         } else {
-            if (Math.floor(player_1.x_pos) <= (Math.floor(player_2.x_pos) + player_2.width)) {
+            if (Math.floor(player_1.x_pos) <= (Math.floor(player_2.x_pos) + player_2.width + 20)) {
                 if (player_1.soco && player_1.no_ar == false) {
                     vidap2.vida -= 1;
+                    player_2.x_vel -= 2;
                 } else if (player_1.soco && Math.floor(player_1.y_pos) >= (Math.floor(player_2.y_pos) - player_2.height - 5)) {
                     vidap2.vida -= 1;
+
                 }
                 if (player_1.chute && player_1.no_ar == false && player_2.no_ar == false) {
                     vidap2.vida -= 2;
@@ -541,9 +545,10 @@ function sistemaDano() {
     }
     if (player_1.agachando == false) {
         if (player_1.lado_esquerdo == false) {
-            if (Math.floor(player_2.x_pos) >= (Math.floor(player_1.x_pos) - player_1.width)) {
+            if (Math.floor(player_2.x_pos) >= (Math.floor(player_1.x_pos) - player_1.width - 20)) {
                 if (player_2.soco && player_2.no_ar == false) {
                     vidap1.vida -= 1;
+                    player_1.x_vel += 2;
                 } else if (player_2.soco && Math.floor(player_2.y_pos) >= (Math.floor(player_1.y_pos) - player_1.height - 5)) {
                     vidap1.vida -= 1;
                 }
@@ -554,11 +559,13 @@ function sistemaDano() {
                 }
             }
         } else {
-            if (Math.floor(player_2.x_pos) <= (Math.floor(player_1.x_pos) + player_1.width)) {
+            if (Math.floor(player_2.x_pos) <= (Math.floor(player_1.x_pos) + player_1.width + 20)) {
                 if (player_2.soco && player_2.no_ar == false) {
                     vidap1.vida -= 1;
+                    player_1.x_vel -= 2;
                 } else if (player_2.soco && Math.floor(player_2.y_pos) >= (Math.floor(player_1.y_pos) - player_1.height - 5)) {
                     vidap1.vida -= 1;
+
                 }
                 if (player_2.chute && player_2.no_ar == false && player_1.no_ar == false) {
                     vidap1.vida -= 2;
@@ -624,6 +631,7 @@ function colisaoMagia() {
                 fireball_p2.direita = false;
                 setTimeout(function() {
                     vidap1.vida -= 10;
+                    player_1.x_vel -= 5;
                     fireball_p2.na_tela = false;
                 }, 100);
             }
@@ -633,6 +641,7 @@ function colisaoMagia() {
                 fireball_p2.esquerda = false;
                 setTimeout(function() {
                     vidap1.vida -= 10;
+                    player_1.x_vel += 5;
                     fireball_p2.na_tela = false;
                 }, 100);
             }
@@ -648,6 +657,7 @@ function colisaoMagia() {
                 fireball_p1.direita = false;
                 setTimeout(function() {
                     vidap2.vida -= 10;
+                    player_2.x_vel -= 5;
                     fireball_p1.na_tela = false;
                 }, 100);
             }
@@ -657,6 +667,7 @@ function colisaoMagia() {
                 fireball_p1.esquerda = false;
                 setTimeout(function() {
                     vidap2.vida -= 10;
+                    player_2.x_vel += 5;
                     fireball_p1.na_tela = false;
                 }, 100);
             }

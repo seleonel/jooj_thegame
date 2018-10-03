@@ -1,7 +1,7 @@
 body {
   font-family: 'Source Sans Pro', sans-serif;
   color: white;
-  background-color: black;
+  background-color: #0e0011;
 }
 
 .fullbody {
@@ -19,7 +19,14 @@ body {
 
 }
 
+.textos{
+    color: white;
 
+
+
+
+
+}
 .titulos {
   background-color:#f442a7;
   color: white;
@@ -51,8 +58,8 @@ body {
 .explanation{
 
   color: white;
-  background-color: black;
-  margin: auto;
+  background-color: #0e0011;
+  margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
   text-align: center;
@@ -61,8 +68,30 @@ body {
     color: black;
     background-color: #ff9bf3;
 
-}
 
+}
+.explanation table{
+     margin: 0 auto;
+     width: 50%;
+     padding: 10px;
+     text-align: center;
+
+
+
+}
+.explanation table th{
+    background-color: #ff9bf3;
+    padding:0 20px 0 20px;
+
+}
+.textos p {
+    color: white;
+    padding: 10px 80px;
+    text-align:justify;
+
+
+
+}
 
 .botaorev{
   color: black;
