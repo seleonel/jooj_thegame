@@ -38,21 +38,26 @@ body {
     font-size: 16px;
     text-align: left;
     padding: 1px 20px;
-    width: 100%;
+    width: 60%;
     box-sizing: border-box;
 }
 
 .bigtitulos {
     background-color: #f442a7;
     color: white;
-    font-size: 26px;
+    font-size: 24px;
     text-align: left;
-    padding: 1px 20px;
+    padding: 2px 50px;
     width: 100%;
     box-sizing: border-box;
 }
 
+.legenda{
+    font-size: 14px;
+    text-align: center;
+    color: white;
 
+}
 .logo{
     width: 90%;
     position: relative;
@@ -62,7 +67,7 @@ body {
 .logo img{
     display: block;
     margin: 0 auto;
-    
+
 }
 .explanation {
     color: white;
@@ -120,7 +125,27 @@ body {
 .botoesext:hover {
     opacity: 1.0;
 }
+.botaorev button{
+  color: black;
+  border: none;
+  background-color: #f442a7;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px 0px;
+  width: 18%;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  opacity: 0.8;
+  font-family: 'Quicksand', sans-serif;
+}
 
+.botaorev button:hover{
+  opacity: 1.0;
+
+}
 .navegador {
     font-family: 'Quicksand', sans-serif;
     font-size: 16px;

@@ -5,11 +5,6 @@
 var canvas = document.getElementById("canvasjooj");
 var ctx = canvas.getContext("2d");
 var teclas_press = [];
-var vitoria_canvas = new Image();
-var temp_xball;
-var temp_yball
-var temp1_xball;
-var temp1_yball
 // para desmutar a musica, jogo começa não mutado
 nao_mutado = true;
 // constante para gravidade
@@ -18,6 +13,12 @@ valor_gravidade = 0.98;
 var contador_rounds = 0;
 // variavel para empate
 partida_empate = false;
+// variáveis para a captura momentânea da posição dos players
+// será usada na permanência da direção das magias
+var temp_xball;
+var temp_yball
+var temp1_xball;
+var temp1_yball
 // são definidas as "poses" de vitória e derrota
 var vit_player = new Image();
 var derr_player = new Image();
@@ -169,7 +170,10 @@ var vidap2 = {
     height: 8,
     cor: "#f442d7"
 };
-
+/*
+ * Fireballs dos jogadores, a posição de onde foram lançadas é mais importante
+ * que a posição dos players em si, a presença na tela define a duração
+ */
 var fireball_p1 = {
     x_pos: 0,
     y_pos: 0,

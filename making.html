@@ -24,6 +24,223 @@
     </div>
     <!-- div para o corpo do site, o separando do início  -->
     <div class="fullbody">
+        <div class="bigtitulos">
+            <h5>Criando seu próprio Jooj: The Game</h5>
+        </div>
+        <br>
+        <div class="textos">
+            <p>O editor escolhido para a realização desse projeto foi o Atom e sua eficiência/diversos plugins
+                se provaram úteis na produção mais organizada do código.</p>
+            <p>Todos os sprites, screenshots, efeitos e cenários foram editados no GIMP, editor da free software fundation, ou seja, software livre.</p>
+        </div>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>Sprites</h3>
+        </div>
+        <div class="explanation">
+            <h3>Ryu</h3>
+        </div>
+        <div class="textos">
+            <p>Os sprites são do personagem Ryu da série Street Fighter. No caso, a versão Alpha.
+                No caso, a spritesheet foi dividida em ações para facilitar na hora de desenhar no canvas, isto aumenta a performance,
+                piora a coesão e entendimento do código, devido as inúmeras declarações necessárias.</p>
+            <p> Spritesheets são longas imagens onde a altura é constante e a largura varia, permitindo a animação de uma área da spritesheet até outra.</p>
+            <p>O site utilizado para obtenção da spritesheet é o <a href="https://spritedatabase.net/">Sprite Database</a>, o qual contém sprites das várias gerações de consoles e arcades.</p>
+            <div class="botaorev">
+                <button id="botaomostrar" onclick="revelar('spritesheet', 'botaoesconder', 'botaomostrar');"> Abrir Spritesheet</button>
+            </div>
+            <img id="spritesheet" style="display: none;" src="images/ryuspritesheet.gif">
+            <div class="botaorev">
+                <button id="botaoesconder" style="display: none;" onclick="esconder('spritesheet', 'botaoesconder', 'botaomostrar');"> Fechar Spritesheet</button>
+            </div>
+        </div>
+        <br>
+        <div class="textos">
+            <p>A função new Image() cria uma nova imagem e a assigna à uma variável, a fonte dessa imagem é definida posteriormente.</p>
+        </div>
+        <br>
+        <img src="images/defimagens.png" height="30%" width="30%"><img src="images/defimagens2.png" height="50%" width="30%">
+        <br>
+        <p class="legenda">Longa lista de declarações de variáveis para as imagens usadas no jogo: posições, ações e reações. As declarações vão das linhas 22 até 112</p>
+        <p class="legenda">Há uma forma de automatizar isso?</p>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>Objetos</h3>
+        </div>
+        <div class="textos">
+            <p> Objetos em javascript funcionam de forma semelhante como nas outras linguagens. Tratam-se de variáveis que aceitam mais de um valor diferente para múltiplas "classes", essas
+            por sua vez, podem receber variados valores para depois serem referênciadas ao longo do código.</p>
+            <p>Os objetos são declarados de acordo com sua ordem de relevância.</p>
+        </div>
+        <br>
+
+        <div class="explanation">
+            <h3>Players</h3>
+        </div>
+        <div class="textos">
+            <p> Uma das partes mais importantes do jogo, é definida a posição inicial de cada player, bem como seu conjunto de ações e estados, no caso
+            golpes e etc. O tamanho médio do sprite define parte da "hitbox", onde mais tarde serão comparadas para fins de definir colisões. Deve ser destacada
+        a importância da variável lado_esquerdo, uma vez que apenas um jogador pode estar no lado esquerdo por vez. Frequentemente é o lado "oficial" do Player 1 nos jogos de luta.</p>
+        </div>
+        <img src="images/obj1.png" height="50%" width="50%">
+        <p class="legenda">Os players têm suas ações definidas, e nelas são usados os tipos booleanos "true" e "false"</p>
+        <div class="explanation">
+            <h3>Vida</h3>
+        </div>
+        <div class="textos">
+            <p>A barra de Vida/HP é definida pela quantidade de pixels que toma, ou seja, todo o dano recebido por um jogador
+            é diretamente retirado da quantidade de pixels. No caso, cada jogador tem 328 pontos de vida.</p>
+        </div>
+        <img src="images/obj2.png" height="50%" width="50%">
+        <div class="explanation">
+            <h3>Fireballs</h3>
+        </div>
+        <div class="textos">
+            <p>As fireballs são independentes dos players exceto por um fator, a posição no eixo X. Essa é a posição onde surgirão no momento
+            em que forem utilizadas. Para evitar valores indefinidos, essas posições são inicializadas com 0.</p>
+        </div>
+        <img src="images/obj3.png" height="50%" width="50%">
+        <p class="legenda">Uma fireball, vindo da esquerda, se manterá naquele lado e o mesmo para a direita. A troca de sprites é definida a partir
+        do valor dessa variável no momento.</p>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>Física do jogo</h3>
+        </div>
+        <p align="center"> Talvez meu maior orgulho, a física define o fluxo e velocidade da partida numa forma geral na troca de processamento.</p>
+        <img src="images/fisica1.png" width="40%" height="40%">
+        <div class="explanation">
+            <h3>Como funciona</h3>
+        </div>
+        <div class="textos">
+            <p>Logo no começo do programa é definida uma constante para gravidade com o valor de 0,98. Tal valor foi obtido no método de tentativa e erro.</p>
+            <img src="images/fisica2.png" width="40%" height="40%">
+            <p>A gravidade também influencia a velocidade no eixo Y, tornando o pulo realidade no gameplay, quando isso acontece, a velocidade negativa no eixo Y é mais "forte" que a gravidade.</p>
+            <p>As velocidades as quais são alteradas pelos toques nas teclas, são sempre multiplicadas pela fricção/valores menores que 1, logo, os tornando-os valores menores gradualmente.</p>
+        </div>
+        <div class="explanation">
+            <h3>E com as fireballs?</h3>
+        </div>
+        <div class="textos">
+            <p>As fireballs têm velocidade constante, já definida no objeto. Aqui a posição inicial é definida de acordo com a posição do player e qual direção está olhando.</p>
+        </div>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>Sistema de colisão</h3>
+        </div>
+        <div class="textos"></div>
+        <div class="explanation">
+            <h3>Players e cenário</h3>
+        </div>
+        <div class="textos"></div>
+        <div class="explanation">
+            <h3>Players e players</h3>
+        </div>
+        <div class="textos"></div>
+        <div class="explanation">
+            <h3>Fireballs e players</h3>
+        </div>
+        <div class="textos"></div>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>Detecção das teclas no teclado</h3>
+        </div>
+
+        <div class="explanation">
+            <h3>Como é feita</h3>
+        </div>
+        <div class="textos"></div>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>Desenhando os players(jogadores)</h3>
+        </div>
+        <div class="textos"></div>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>Desenhando as magias</h3>
+        </div>
+        <div class="textos"></div>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>Desenhando elementos do cenário</h3>
+        </div>
+        <div class="textos"></div>
+        <div class="explanation">
+            <h3>Moldura</h3>
+        </div>
+        <div class="textos"></div>
+        <div class="explanation">
+            <h3>Rounds</h3>
+        </div>
+        <div class="textos"></div>
+        <div class="explanation">
+            <h3>Cenário</h3>
+        </div>
+        <div class="textos"></div>
+        <div class="explanation">
+            <h3>Tela de KO</h3>
+        </div>
+        <div class="textos"></div>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>Definindo o lado na tela</h3>
+        </div>
+        <div class="textos"></div>
+        <div class="explanation">
+            <h3>Posição no eixo X</h3>
+        </div>
+        <div class="textos"></div>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>Sistema de recovery</h3>
+        </div>
+        <div class="textos"></div>
+        <div class="explanation">
+            <h3>Uma explicação mais técnica</h3>
+        </div>
+        <div class="textos"></div>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>Cálculo da vitória</h3>
+        </div>
+        <div class="textos"></div>
+        <div class="explanation">
+            <h3>Rounds</h3>
+        </div>
+        <div class="textos"></div>
+        <div class="explanation">
+            <h3>Vida</h3>
+        </div>
+        <div class="textos"></div>
+        <div class="explanation">
+            <h3>Empate</h3>
+        </div>
+        <div class="textos"></div>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>Menu Principal e o reset do jogo</h3>
+        </div>
+        <div class="textos"></div>
+        <br>
+        <br>
+        <div class="titulos">
+            <h3>A função comecarJogo()</h3>
+        </div>
+        <div class="textos"></div>
+
+
+
     </div>
     <button class="botoesext" onclick="focopag('toperino');">Voltar para o topo</button>
 </body>
